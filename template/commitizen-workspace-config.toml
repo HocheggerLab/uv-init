@@ -1,0 +1,21 @@
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.1.0"
+tag_format = "v$version"
+version_files = [
+    "pyproject.toml:version",
+    "src/{package_name}/__init__.py:__version__",
+    "README.md:version-[0-9]+\\.[0-9]+\\.[0-9]+",
+    "packages/shared-utils/pyproject.toml:version",
+    "packages/shared-utils/src/shared_utils/__init__.py:__version__",
+    "packages/shared-utils/README.md:version-[0-9]+\\.[0-9]+\\.[0-9]+",
+    "packages/{other_service_name}/pyproject.toml:version",
+    "packages/{other_service_name}/src/{other_service_package_name}/__init__.py:__version__",
+    "packages/{other_service_name}/README.md:version-[0-9]+\\.[0-9]+\\.[0-9]+"
+]
+version_provider = "commitizen"
+major_version_zero = true
+bump_message = "bump: version $current_version → $new_version"
+update_changelog_on_bump = true
+annotated_tag = true
+ 

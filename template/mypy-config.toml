@@ -1,0 +1,27 @@
+[tool.mypy]
+strict = true
+python_version = 3.12
+exclude = '''
+(
+    ^\.venv
+  | ^venv
+  | ^env
+  | ^build
+  | ^dist
+  | ^migrations
+  | ^some_untyped_package
+  | ^another_untyped_package
+)/
+'''
+incremental = true
+cache_dir = ".mypy_cache"
+ignore_missing_imports = false
+#follow_imports = "silent"
+pretty = true
+warn_unused_configs = true
+
+["tool.mypy.some_untyped_package.*"]
+ignore_missing_imports = true
+
+["tool.mypy.another_untyped_package.*"]
+ignore_missing_imports = true
