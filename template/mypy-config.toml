@@ -1,3 +1,7 @@
+# ===========================
+# Mypy Configuration Section
+# ===========================
+
 [tool.mypy]
 strict = true
 python_version = 3.12

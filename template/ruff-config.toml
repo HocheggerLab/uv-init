@@ -1,5 +1,6 @@
-
-
+# ===========================
+# Ruff Configuration Section
+# ===========================
 
 [tool.ruff]
 line-length = 79

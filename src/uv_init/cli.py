@@ -115,7 +115,3 @@ def validate_project_name(name: str) -> str:
     return name
 
 
-if __name__ == "__main__":
-    args = parse_args()
-    print(args.project_name)
-    print(args.type)

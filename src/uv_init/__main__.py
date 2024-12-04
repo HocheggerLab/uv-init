@@ -1,14 +1,12 @@
 
 
 from uv_init.cli import parse_args
-from uv_init.router import CommandDispatcher
+from uv_init.router import initialize_uv_project
 
 
 def main() -> None:
     args = parse_args()
-    dispatcher = CommandDispatcher(args)
-    dispatcher.check_dir_exists()
-    dispatcher.dispatch()
+    initialize_uv_project(args)
 
 
 if __name__ == "__main__":

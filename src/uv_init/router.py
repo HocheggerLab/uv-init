@@ -7,6 +7,19 @@ from pathlib import Path
 
 from rich import print as rprint
 from rich.panel import Panel
+from rich.prompt import Prompt
+
+from uv_init.dev_deps import add_dev_dependencies, parse_dev_configs
+from uv_init.parse_docs import parse_docs
+
+
+def initialize_uv_project(args: Namespace) -> None:
+    dispatcher = CommandDispatcher(args)
+    dispatcher.check_dir_exists()
+    dispatcher.dispatch()
+    add_dev_dependencies(args.project_name, dispatcher.project_path)
+    parse_dev_configs(dispatcher.project_path)
+    parse_docs(args, dispatcher.project_path)
 
 
 @dataclass
@@ -20,9 +33,11 @@ class CommandDispatcher:
         )
     )
 
+    def __post_init__(self):
+        self.project_path = self.original_cwd / self.args.project_name
+
     def check_dir_exists(self) -> None:
-        project_path = self.original_cwd / self.args.project_name
-        if project_path.exists():
+        if self.project_path.exists():
             rprint(
                 Panel.fit(
                     f"[red]Error:[/red] Cannot create project '[bold]{self.args.project_name}[/bold]'\n"
@@ -93,5 +108,91 @@ class CommandDispatcher:
 
     def _initialize_workspace(self) -> None:
         """Initialize workspace configuration after project creation"""
-        # Add workspace initialization logic here
-        pass
+        packages_path = self.project_path / "packages"
+        packages_path.mkdir(exist_ok=True)
+        rprint("[green]Initializing workspace...[/green]")
+        common_utils = Prompt.ask(
+            "Do you want to add common utilities?",
+            choices=["y", "n"],
+            default="n",
+        )
+
+        if common_utils == "y":
+            self._add_common_utils()
+        other_projects = Prompt.ask(
+            "Do you want to add other projects?",
+            choices=["y", "n"],
+            default="n",
+        )
+        if other_projects == "y":
+            project_name = Prompt.ask("Enter the project-name: ")
+            self._add_other_projects(project_name)
+
+    def _add_common_utils(self) -> None:
+        """Add common utilities to the workspace"""
+        try:
+            subprocess.run(
+                [
+                    "uv",
+                    "init",
+                    "common-utils",
+                    "--lib",
+                ],
+                check=True,
+                cwd=self.project_path / "packages",
+            )
+            subprocess.run(
+                [
+                    "uv",
+                    "add",
+                    "./packages/common-utils",
+                    "--editable",
+                ],
+                check=True,
+                cwd=self.project_path,
+            )
+            rprint("[green]✓[/green] Successfully added common_utils'")
+        except subprocess.CalledProcessError as e:
+            rprint(
+                Panel.fit(
+                    f"[red]Error:[/red] Failed to create common_utils\n{e}",
+                    title="Common Utils Creation Failed",
+                    border_style="red",
+                )
+            )
+            sys.exit(1)
+
+    def _add_other_projects(self, project_name: str) -> None:
+        """Add other projects to the workspace"""
+        try:
+            subprocess.run(
+                [
+                    "uv",
+                    "init",
+                    project_name,
+                    "--package",
+                    "--app",
+                ],
+                check=True,
+                cwd=self.project_path / "packages",
+            )
+            subprocess.run(
+                [
+                    "uv",
+                    "add",
+                    f"./packages/{project_name}",
+                    "--editable",
+                ],
+                check=True,
+                cwd=self.project_path
+            )
+            rprint(f"[green]✓[/green] Successfully created {project_name}")
+        except subprocess.CalledProcessError as e:
+            rprint(
+                Panel.fit(
+                    f"[red]Error:[/red] Failed to create  {project_name}\n{e}",
+                    title="Common Utils Creation Failed",
+                    border_style="red",
+                )
+            )
+            sys.exit(1)
