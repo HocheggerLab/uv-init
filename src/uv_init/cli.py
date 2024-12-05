@@ -104,6 +104,13 @@ def parse_args() -> argparse.Namespace:
         default=False,
     )
 
+    parser.add_argument(
+        "-g",
+        "--github",
+        help="Create a GitHub repository",
+        action="store_true",
+        default=False,
+    )
     return parser.parse_args()
 
 
