@@ -13,7 +13,7 @@ from rich.panel import Panel
 
 def parse_docs(args: Namespace, project_dir: Path) -> None:
     """Parse the README.md file and update the content with project information."""
-    for template in ["README.md", "LICENSE", ".gitignore"]:
+    for template in ["README.md", "LICENSE", ".gitignore", ".pre-commit-config.yaml"]:
         copy_template(template, project_dir)
     update_readme(project_dir, args)
     update_license(project_dir, args)
