@@ -23,8 +23,10 @@ build-backend = "hatchling.build"
 dev = [
     "commitizen>=4.0.0",
     "mypy>=1.13.0",
+    "pre-commit>=4.0.1",
     "pytest>=8.3.3",
     "ruff>=0.8.0",
+    "uv-init",
 ]
 
 
@@ -92,7 +94,7 @@ version_provider = "commitizen"
 major_version_zero = true
 bump_message = "bump: version $current_version → $new_version"
 update_changelog_on_bump = true
-annotated_tag = true 
+annotated_tag = true
 [tool.mypy]
 strict = true
 python_version = 3.12
@@ -117,6 +119,9 @@ warn_unused_configs = true
 
 [tool.uv.workspace]
 members = ["my-app"]
+
+[tool.uv.sources]
+uv-init = { workspace = true }
 
 ["tool.mypy.some_untyped_package.*"]
 ignore_missing_imports = true
