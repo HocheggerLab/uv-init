@@ -1,3 +1,10 @@
+## v0.1.5 (2024-12-05)
+
+### Fix
+
+- **global**: install pre-commit hooks
+- **router.py-cli.py**: make github repo optional with flag refactor main function
+
 ## v0.1.4 (2024-12-05)
 
 ## v0.1.3 (2024-12-05)
