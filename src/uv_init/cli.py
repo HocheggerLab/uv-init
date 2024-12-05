@@ -1,4 +1,6 @@
 import argparse
+import sys
+from typing import IO, NoReturn, Optional
 
 from rich import print as rprint
 from rich.panel import Panel
@@ -6,7 +8,7 @@ from rich.text import Text
 
 
 class RichArgumentParser(argparse.ArgumentParser):
-    def format_help(self) -> Panel:
+    def format_help(self) -> str:
         help_text = Text()
 
         # Program description
@@ -40,13 +42,12 @@ class RichArgumentParser(argparse.ArgumentParser):
         # Epilog
         help_text.append(f"\n{self.epilog}\n", style="bold blue")
 
-        return Panel(help_text, title="UV Init Help", border_style="cyan")
+        return str(Panel(help_text, title="UV Init Help", border_style="cyan"))
 
-    def print_help(self):
+    def print_help(self, file: Optional[IO[str]] = None) -> None:
         rprint(self.format_help())
-        exit(0)
 
-    def error(self, message):
+    def error(self, message: str) -> NoReturn:
         error_message = Text()
         error_message.append("Error: ", style="bold red")
         error_message.append(f"{message}\n\n")
@@ -57,16 +58,14 @@ class RichArgumentParser(argparse.ArgumentParser):
             error_message, title="Command Line Error", border_style="red"
         )
         rprint(panel)
-        exit(2)
+        sys.exit(2)
 
 
 def parse_args() -> argparse.Namespace:
-    """Parse the command line arguments"""
     parser = RichArgumentParser(
-        prog="uv_init",
-        description="Initialize a new project",
+        description="Initialize a new Python project with uv",
         usage=(
-            "uv_init <project_name> "
+            "uv-init project_name "
             "[-t lib|package|app] "
             "[-p 3.13|3.12|3.11|3.10] "
             "[-w]"
@@ -83,7 +82,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "-t",
         "--type",
-        help="The type of project to create (lib, package, app)",
+        help="The type of project to create (lib, package, or app)",
         default="lib",
         choices=["lib", "package", "app"],
     )
@@ -111,6 +110,7 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         default=False,
     )
+
     return parser.parse_args()
 
 
@@ -120,5 +120,3 @@ def validate_project_name(name: str) -> str:
             "Project name cannot contain spaces or under-scores"
         )
     return name
-
-

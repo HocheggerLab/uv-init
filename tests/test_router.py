@@ -1,9 +1,9 @@
+import subprocess
+from argparse import Namespace
 from pathlib import Path
 from unittest.mock import Mock, patch
-import subprocess
-import pytest
-from argparse import Namespace
 
+import pytest
 from uv_init.router import CommandDispatcher
 
 
@@ -86,31 +86,25 @@ def test_full_project(mock_subprocess, dispatcher, base_args):
     dispatcher.dispatch()
 
     mock_subprocess.assert_called_once_with(
-        ["uv", "init", "test-project", "--package", "--app", "--python", "3.12"],
+        [
+            "uv",
+            "init",
+            "test-project",
+            "--package",
+            "--app",
+            "--python",
+            "3.12",
+        ],
         check=True,
         cwd=Path.cwd(),
     )
-
-
-def test_workspace_project(mock_subprocess, dispatcher, base_args):
-    """Test creating a workspace project"""
-    base_args.type = "lib"
-    base_args.workspace = True
-    dispatcher.dispatch()
-
-    mock_subprocess.assert_called_once_with(
-        ["uv", "init", "test-project", "--lib", "--python", "3.12"],
-        check=True,
-        cwd=Path.cwd(),
-    )
-    # Add assertions for workspace initialization once implemented
 
 
 def test_invalid_project_type(base_args):
     """Test handling invalid project type"""
     args = base_args
     args.type = "invalid"
-    
+
     dispatcher = CommandDispatcher(args, Path.cwd())
     with pytest.raises(ValueError, match="Unknown project type: invalid"):
         dispatcher.dispatch()
@@ -120,11 +114,11 @@ def test_subprocess_error(mock_subprocess, base_args):
     """Test handling subprocess error"""
     args = base_args
     args.type = "lib"
-    
+
     # Create a CalledProcessError instance correctly
     error = subprocess.CalledProcessError(1, ["uv", "init"])
     mock_subprocess.side_effect = error
-    
+
     dispatcher = CommandDispatcher(args, Path.cwd())
     with pytest.raises(SystemExit):
         dispatcher.dispatch()

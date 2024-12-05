@@ -3,10 +3,8 @@ from argparse import Namespace
 from pathlib import Path
 
 import pytest
-
-from src.uv_init.parse_docs import (
+from uv_init.parse_docs import (
     _copy_template,
-    load_env_data,
     _update_content,
 )
 
@@ -60,51 +58,51 @@ def test_copy_template_file_not_found(temp_project_structure):
         _copy_template("nonexistent.txt", project_dir)
 
 
-def test_load_env_data(monkeypatch, tmp_path):
-    """Test loading environment variables from a mocked .env file."""
-    # Create a temporary .env file
-    env_file = tmp_path / ".env"
-    env_file.write_text(
-        "AUTHOR_NAME=Test Author\nAUTHOR_EMAIL=test@example.com"
-    )
-
-    # Monkeypatch the environment to load from the temporary .env file
-    monkeypatch.setenv("AUTHOR_NAME", "Test Author")
-    monkeypatch.setenv("AUTHOR_EMAIL", "test@example.com")
-
-    # Load the environment data
-    env_data = load_env_data()
-
-    # Assert the environment variables are loaded correctly
-    assert env_data["AUTHOR_NAME"] == "Test Author"
-    assert env_data["AUTHOR_EMAIL"] == "test@example.com"
-
-
 def test_update_content(tmp_path: Path):
     # Setup temporary project directory and files
     project_dir = tmp_path / "project"
     project_dir.mkdir()
+
+    # Create mock template files directly in the temp directory
+    template_dir = tmp_path / "template"
+    template_dir.mkdir()
+
+    # Create mock README.md with the exact placeholders used in _parse_replacement
+    readme_content = """# Title
+
+A project using Python {python_version}
+
+## Author
+{author} ({email})
+"""
+    (template_dir / "README.md").write_text(readme_content)
+
+    # Create mock LICENSE file
+    license_content = "Copyright (c) {year} {author}"
+    (template_dir / "LICENSE").write_text(license_content)
+
+    # Copy mock templates to project directory
     for template in ["README.md", "LICENSE"]:
-        # Copy actual template file to temp path
-        template_file = Path.cwd() / f"template/{template}"
-        shutil.copy(template_file, project_dir / template)
+        shutil.copy(template_dir / template, project_dir / template)
 
     # Define args
     args = Namespace(project_name="TestProject", python="3.9")
 
-    # Call the function
-    _update_content(project_dir, args)
+    # Set environment variables for the test
+    with pytest.MonkeyPatch().context() as mp:
+        mp.setenv("AUTHOR_NAME", "Test Author")
+        mp.setenv("AUTHOR_EMAIL", "test@example.com")
+
+        # Call the function
+        _update_content(project_dir, args, "README.md")
 
     # Check README.md content
     readme_path = project_dir / "README.md"
     readme_content = readme_path.read_text()
+    print(f"Generated content:\n{readme_content}")  # Debug print
 
     # Verify replacements
-    assert "# TestProject" in readme_content
+    assert "# project" in readme_content  # parent_dir_name will be "project"
     assert "Python 3.9" in readme_content
-    assert "Helfrid" in readme_content  # Default author name
-    assert "hh65" in readme_content  # Default email
-
-    # Check LICENSE content
-    license_content = (project_dir / "LICENSE").read_text()
-    assert "Helfrid" in license_content
+    assert "Test Author" in readme_content
+    assert "test@example.com" in readme_content

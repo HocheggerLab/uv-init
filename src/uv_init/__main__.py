@@ -1,5 +1,6 @@
-
+import os
 from argparse import Namespace
+from pathlib import Path
 
 from uv_init.cli import parse_args
 from uv_init.dev_deps import add_dev_dependencies, parse_dev_configs
@@ -9,7 +10,8 @@ from uv_init.setup_git_repo import setup_git_repo
 
 
 def initialize_uv_project(args: Namespace) -> None:
-    dispatcher = CommandDispatcher(args)
+    original_cwd = Path(os.environ.get("UV_ORIGINAL_CWD", os.getcwd()))
+    dispatcher = CommandDispatcher(args=args, original_cwd=original_cwd)
     dispatcher.check_dir_exists()
     dispatcher.dispatch()
     if args.github:
@@ -17,6 +19,7 @@ def initialize_uv_project(args: Namespace) -> None:
     add_dev_dependencies(args.project_name, dispatcher.project_path)
     parse_dev_configs(dispatcher.project_path)
     parse_docs(args, dispatcher.project_path)
+
 
 def main() -> None:
     args = parse_args()

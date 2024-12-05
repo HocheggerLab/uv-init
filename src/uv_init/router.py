@@ -1,8 +1,7 @@
-import os
 import subprocess
 import sys
 from argparse import Namespace
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
 from rich import print as rprint
@@ -15,13 +14,9 @@ class CommandDispatcher:
     """Dispatch commands based on argument pattern"""
 
     args: Namespace
-    original_cwd: Path = field(
-        default_factory=lambda: Path(
-            os.environ.get("UV_ORIGINAL_CWD", os.getcwd())
-        )
-    )
+    original_cwd: Path
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.project_path = self.original_cwd / self.args.project_name
 
     def check_dir_exists(self) -> None:
@@ -48,11 +43,9 @@ class CommandDispatcher:
             case "lib":
                 return ["--lib"]
             case "app":
-                return ["--app"]
+                return ["--app", "--package"]
             case "package":
                 return ["--package"]
-            case "full":
-                return ["--package", "--app"]
             case _:
                 raise ValueError(f"Unknown project type: {self.args.type}")
 
@@ -77,6 +70,12 @@ class CommandDispatcher:
                 check=True,
                 cwd=self.original_cwd,
             )
+            # Create tests directory
+            tests_dir = self.project_path / "tests"
+            tests_dir.mkdir(exist_ok=True)
+            # Create an empty __init__.py in tests directory
+            (tests_dir / "__init__.py").touch()
+
             rprint(
                 f"[green]✓[/green] Successfully created {project_type} project '[bold]{self.args.project_name}[/bold]'"
             )
@@ -172,7 +171,7 @@ class CommandDispatcher:
                     "--editable",
                 ],
                 check=True,
-                cwd=self.project_path
+                cwd=self.project_path,
             )
             rprint(f"[green]✓[/green] Successfully created {project_name}")
         except subprocess.CalledProcessError as e:

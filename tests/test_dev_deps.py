@@ -1,11 +1,10 @@
 # test_dev_deps.py
 import subprocess
 from pathlib import Path
-from unittest.mock import mock_open, patch
+from unittest.mock import call, mock_open, patch
 
 import pytest
-
-from src.uv_init.dev_deps import add_dev_dependencies, parse_dev_configs
+from uv_init.dev_deps import add_dev_dependencies, parse_dev_configs
 
 
 def test_add_dev_dependencies_success():
@@ -16,10 +15,37 @@ def test_add_dev_dependencies_success():
 
         add_dev_dependencies("fake_project", project_path)
 
-        mock_run.assert_called_once_with(
-            ["uv", "add", "--dev", "ruff", "pytest", "mypy", "commitizen"],
-            check=True,
-            cwd=project_path,
+        mock_run.assert_has_calls(
+            [
+                call(
+                    [
+                        "uv",
+                        "add",
+                        "--dev",
+                        "ruff",
+                        "pytest",
+                        "mypy",
+                        "commitizen",
+                        "pre-commit",
+                    ],
+                    check=True,
+                    cwd=project_path,
+                ),
+                call(
+                    [
+                        "uv",
+                        "run",
+                        "pre-commit",
+                        "install",
+                        "--hook-type",
+                        "pre-commit",
+                        "--hook-type",
+                        "commit-msg",
+                    ],
+                    check=True,
+                    cwd=project_path,
+                ),
+            ]
         )
 
 
@@ -42,8 +68,15 @@ def test_parse_dev_configs_success():
 
     mock_file = mock_open(read_data=config_content)
 
-    with patch.object(Path, "exists") as mock_exists:
+    # Create a mock Path object for the packages directory
+    mock_package_path = Path("/fake/path/packages/some_package")
+
+    with patch.object(Path, "exists") as mock_exists, patch.object(
+        Path, "mkdir"
+    ) as _, patch.object(Path, "iterdir") as mock_iterdir:
         mock_exists.return_value = True
+        # Mock iterdir to return an iterable with a mock package path
+        mock_iterdir.return_value = [mock_package_path]
 
         with patch.object(Path, "open", mock_file):
             parse_dev_configs(project_path)
