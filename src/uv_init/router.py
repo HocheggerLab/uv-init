@@ -18,7 +18,7 @@ def initialize_uv_project(args: Namespace) -> None:
     dispatcher = CommandDispatcher(args)
     dispatcher.check_dir_exists()
     dispatcher.dispatch()
-    setup_git_repo(args.project_name, dispatcher.project_path)
+    #setup_git_repo(args.project_name, dispatcher.project_path)
     add_dev_dependencies(args.project_name, dispatcher.project_path)
     parse_dev_configs(dispatcher.project_path)
     parse_docs(args, dispatcher.project_path)

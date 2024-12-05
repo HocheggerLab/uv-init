@@ -4,7 +4,11 @@ from pathlib import Path
 
 import pytest
 
-from src.uv_init.parse_docs import copy_template, load_env_data, update_content
+from src.uv_init.parse_docs import (
+    _copy_template,
+    load_env_data,
+    _update_content,
+)
 
 
 @pytest.fixture
@@ -41,7 +45,7 @@ def test_copy_template_success(temp_project_structure):
 
     # Test copying each template file
     for template in ["README.md", "LICENSE", ".gitignore"]:
-        copy_template(template, project_dir)
+        _copy_template(template, project_dir)
         assert (project_dir / template).exists()
         assert (project_dir / template).read_text() == (
             Path.cwd() / f"template/{template}"
@@ -53,7 +57,7 @@ def test_copy_template_file_not_found(temp_project_structure):
     project_dir, _ = temp_project_structure
 
     with pytest.raises(SystemExit):
-        copy_template("nonexistent.txt", project_dir)
+        _copy_template("nonexistent.txt", project_dir)
 
 
 def test_load_env_data(monkeypatch, tmp_path):
@@ -89,7 +93,7 @@ def test_update_content(tmp_path: Path):
     args = Namespace(project_name="TestProject", python="3.9")
 
     # Call the function
-    update_content(project_dir, args)
+    _update_content(project_dir, args)
 
     # Check README.md content
     readme_path = project_dir / "README.md"
