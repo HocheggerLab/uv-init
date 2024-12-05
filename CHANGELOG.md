@@ -1,3 +1,9 @@
+## v0.1.3 (2024-12-05)
+
+### Feat
+
+- **dev_deps.py-setup_git_repo.py**: add precommit hooks set up remote repo
+
 ## v0.1.2 (2024-12-04)
 
 ### Feat
