@@ -19,7 +19,7 @@ List of contributors
 
 ### Dependencies
 
-Requires Python 3.xx or greater
+Requires Python 3.13 or greater
 
 ## Contact
 
