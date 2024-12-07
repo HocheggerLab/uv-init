@@ -1,4 +1,7 @@
-"""Module to copy the README.md file to the build directory and add author information."""
+"""
+Module to copy the README.md, LICENCE, .gitignore and .pre-commit-config.yaml files
+to the build directory and add author information.
+"""
 
 import os
 import shutil
@@ -19,9 +22,10 @@ def parse_docs(args: Namespace, project_dir: Path) -> None:
         ".pre-commit-config.yaml",
     ]:
         _copy_template(template, project_dir)
+    if args.github:
+        _add_github_workflows(project_dir)
     _update_configs(project_dir, args)
     _init_version(args, project_dir)
-
 
 
 def _copy_template(template: str, project_dir: Path) -> None:
@@ -53,7 +57,7 @@ def _update_configs(project_dir: Path, args: Namespace) -> None:
         _update_content(project_dir, args, template)
 
 
-def _parse_replacement(args: Namespace, content_path: Path) -> dict:
+def _parse_replacement(args: Namespace, content_path: Path) -> dict[str, str]:
     """Load replacements for the README.md files into dictionary."""
     load_dotenv()
 
@@ -71,6 +75,7 @@ def _parse_replacement(args: Namespace, content_path: Path) -> dict:
         "v$version": f"{parent_dir_name}-v$version",
     }
 
+
 def _update_content(
     project_dir: Path, args: Namespace, content_type: str
 ) -> None:
@@ -82,7 +87,8 @@ def _update_content(
                 for package in (project_dir / "packages").iterdir()
                 if package.is_dir()
             ]
-            if (project_dir / "packages").exists() and content_type != "LICENSE"
+            if (project_dir / "packages").exists()
+            and content_type != "LICENSE"
             else []
         )
         for file in content_path:
@@ -103,6 +109,7 @@ def _update_content(
             )
         )
         exit(1)
+
 
 def _init_version(args: Namespace, project_dir: Path) -> None:
     """Initialize the version file with the initial version."""
@@ -131,161 +138,30 @@ def _init_version(args: Namespace, project_dir: Path) -> None:
         )
         exit(1)
 
-# def update_readme(project_dir: Path, args: Namespace) -> None:
-#     """Update the README.md and LICENSE content with project information.
 
-#     Args:
-#         project_dir: Path to the project directory
-#         args: Dictionary containing project configuration (from argparse)
-#     """
-#     env_data = load_env_data()
-#     try:
-#         readme_path = [project_dir / "README.md"] + (
-#             [
-#                 package / "README.md"
-#                 for package in (project_dir / "packages").iterdir()
-#                 if package.is_dir()
-#             ]
-#             if (project_dir / "packages").exists()
-#             else []
-#         )
+def _add_github_workflows(project_dir: Path) -> None:
+    """Add GitHub workflow configurations to the project."""
+    try:
+        # Create .github/workflows directory
+        workflows_dir = project_dir / ".github" / "workflows"
+        workflows_dir.mkdir(parents=True, exist_ok=True)
 
-#         # Update README.md
-#         for readme in readme_path:
-#             with readme.open("r") as f:
-#                 content = f.read()
-#             parent_dir_name = readme.parent.name
-#             readme_replacements = {
-#                 "# Title": f"# {parent_dir_name}",
-#                 "{project_name}": parent_dir_name,
-#                 "{python_version}": args.python,
-#                 "{author}": env_data.get("AUTHOR_NAME", "Unknown"),
-#                 "{email}": env_data.get("AUTHOR_EMAIL", "No email provided"),
-#             }
+        # Copy workflow files
+        for workflow in ["ci.yml", "release.yml"]:
+            source = (
+                Path.cwd() / "template" / ".github" / "workflows" / workflow
+            )
+            dest = workflows_dir / workflow
+            shutil.copy(source, dest)
 
-#             for old, new in readme_replacements.items():
-#                 content = content.replace(old, new)
-
-#             with readme.open("w") as f:
-#                 f.write(content)
-#         rprint("[green]README.md successfully updated[/green]")
-
-#     except FileNotFoundError as e:
-#         rprint(
-#             Panel.fit(
-#                 f"[red]Error:[/red] Failed to update README.md\n{e}",
-#                 title="README.md not updated",
-#                 border_style="red",
-#             )
-#         )
-#         exit(1)
-
-
-# def update_license(project_dir: Path, args: Namespace) -> None:
-#     """Update the LICENSE content with project information."""
-#     env_data = load_env_data()
-#     try:
-#         license_path = project_dir / "LICENSE"
-#         # Update LICENSE
-#         with license_path.open("r") as f:
-#             license_content = f.read()
-#             license_content = license_content.replace(
-#                 "{author}", env_data.get("AUTHOR_NAME", "Unknown")
-#             )
-
-#         with license_path.open("w") as f:
-#             f.write(license_content)
-#         rprint("[green]LICENSE updated[/green]")
-#     except FileNotFoundError as e:
-#         rprint(
-#             Panel.fit(
-#                 f"[red]Error:[/red] Failed to update LICENSE\n{e}",
-#                 title="LICENCE Not Found",
-#                 border_style="red",
-#             )
-#         )
-#         exit(1)
-
-
-# def update_commitzen_tags(args: Namespace, project_dir: Path) -> None:
-#     """Update the commitzen tags in the pyproject.toml file."""
-#     try:
-#         toml_path = [project_dir / "pyproject.toml"] + (
-#             [
-#                 package / "pyproject.toml"
-#                 for package in (project_dir / "packages").iterdir()
-#                 if package.is_dir()
-#             ]
-#             if (project_dir / "packages").exists()
-#             else []
-#         )
-#         for file in toml_path:
-#             with file.open("r") as f:
-#                 content = f.read()
-#             # Parse the TOML content
-#             # Get the parent directory name
-#             parent_dir_name = file.parent.name
-#             toml_data = toml.loads(content)
-#             # Update the tag_format in the commitizen tool section
-#             if "tool" in toml_data and "commitizen" in toml_data["tool"]:
-#                 toml_data["tool"]["commitizen"]["tag_format"] = (
-#                     f"{parent_dir_name}-v$version"
-#                 )
-#             # Convert back to TOML string
-#             updated_content = toml.dumps(toml_data)
-
-#             # Write the updated content back to the file
-#             with file.open("w") as f:
-#                 f.write(updated_content)
-#         rprint("[green]pyproject.toml successfully updated[/green]")
-#     except FileNotFoundError as e:
-#         rprint(
-#             Panel.fit(
-#                 f"[red]Error:[/red] Error updating pyproject.toml:\n{e}",
-#                 title="README.md not updated",
-#                 border_style="red",
-#             )
-#         )
-#         exit(1)
-
-
-
-
-
-# def pyproject_package_name(args: Namespace, project_dir: Path) -> None:
-#     """Update the pyproject.toml commitizen package path with the underscored package name."""
-#     try:
-#         pyproject_paths = [project_dir / "pyproject.toml"] + (
-#             [
-#                 package / "pyproject.toml"
-#                 for package in (project_dir / "packages").iterdir()
-#                 if package.is_dir()
-#             ]
-#             if (project_dir / "packages").exists()
-#             else []
-#         )
-
-#         for pyproject_path in pyproject_paths:
-#             package_name = pyproject_path.parent.name.replace("-", "_")
-#             # Read the existing content of pyproject.toml
-#             with pyproject_path.open("r") as f:
-#                 content = f.read()
-
-#             # Replace {package_name} with the actual package name
-#             content = content.replace("{package_name}", package_name)
-
-#             # Write the updated content back to pyproject.toml
-#             with pyproject_path.open("w") as f:
-#                 f.write(content)
-#             rprint(
-#                 f"[green]pyproject.toml updated for {pyproject_path}[/green]"
-#             )
-#     except FileNotFoundError:
-#         rprint(
-#             Panel.fit(
-#                 "[red]pyproject.toml file not found[/red]",
-#                 title="pyproject.toml Not Found",
-#                 border_style="red",
-#             )
-#         )
-#         exit(1)
+        rprint(
+            "[green]GitHub workflow configurations added successfully[/green]"
+        )
+    except FileNotFoundError as e:
+        rprint(
+            Panel.fit(
+                f"[red]Error:[/red] Failed to add GitHub workflows\n{e}",
+                title="GitHub Workflows Not Added",
+                border_style="red",
+            )
+        )
