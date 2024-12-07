@@ -1,0 +1,63 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'bump:')"
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install commitizen
+
+    - name: Configure Git
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+    - name: Debug Info
+      run: |
+        echo "Current tags:"
+        git tag -l
+        echo "\nLatest commits:"
+        git log --oneline -n 5
+        echo "\nCurrent version:"
+        cz version
+
+    - name: Create bump and changelog
+      run: |
+        # Check if there are any conventional commits since last tag
+        if git log $(git describe --tags --abbrev=0)..HEAD --format=%B | grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .+$'; then
+          cz bump --yes
+        else
+          echo "No conventional commits found since last tag - skipping bump"
+          exit 0
+        fi
+      continue-on-error: true
+
+    - name: Push changes
+      if: success()
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
+        tags: true

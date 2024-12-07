@@ -1,0 +1,108 @@
+import shutil
+from argparse import Namespace
+from pathlib import Path
+
+import pytest
+from uv_init.parse_docs import (
+    _copy_template,
+    _update_content,
+)
+
+
+@pytest.fixture
+def temp_project_structure(tmp_path):
+    """Create a temporary project structure with template files.
+
+    Returns:
+        tuple: (project_dir, template_dir) paths
+    """
+    # Create template directory
+    template_dir = tmp_path / "template"
+    template_dir.mkdir()
+
+    # Create project directory
+    project_dir = tmp_path / "project"
+    project_dir.mkdir()
+
+    # Create sample template files
+    (template_dir / "README.md").write_text("# Sample README")
+    (template_dir / "LICENSE").write_text("Sample License")
+    (template_dir / ".gitignore").write_text("*.pyc\n__pycache__/")
+
+    # Monkeypatch cwd to our temp directory
+    with pytest.MonkeyPatch().context() as mp:
+        mp.chdir(tmp_path)
+        yield project_dir, template_dir
+
+    # Cleanup happens automatically thanks to tmp_path
+
+
+def test_copy_template_success(temp_project_structure):
+    """Test successful template file copying."""
+    project_dir, _ = temp_project_structure
+
+    # Test copying each template file
+    for template in ["README.md", "LICENSE", ".gitignore"]:
+        _copy_template(template, project_dir)
+        assert (project_dir / template).exists()
+        assert (project_dir / template).read_text() == (
+            Path.cwd() / f"template/{template}"
+        ).read_text()
+
+
+def test_copy_template_file_not_found(temp_project_structure):
+    """Test handling of missing template file."""
+    project_dir, _ = temp_project_structure
+
+    with pytest.raises(SystemExit):
+        _copy_template("nonexistent.txt", project_dir)
+
+
+def test_update_content(tmp_path: Path):
+    # Setup temporary project directory and files
+    project_dir = tmp_path / "project"
+    project_dir.mkdir()
+
+    # Create mock template files directly in the temp directory
+    template_dir = tmp_path / "template"
+    template_dir.mkdir()
+
+    # Create mock README.md with the exact placeholders used in _parse_replacement
+    readme_content = """# Title
+
+A project using Python {python_version}
+
+## Author
+{author} ({email})
+"""
+    (template_dir / "README.md").write_text(readme_content)
+
+    # Create mock LICENSE file
+    license_content = "Copyright (c) {year} {author}"
+    (template_dir / "LICENSE").write_text(license_content)
+
+    # Copy mock templates to project directory
+    for template in ["README.md", "LICENSE"]:
+        shutil.copy(template_dir / template, project_dir / template)
+
+    # Define args
+    args = Namespace(project_name="TestProject", python="3.9")
+
+    # Set environment variables for the test
+    with pytest.MonkeyPatch().context() as mp:
+        mp.setenv("AUTHOR_NAME", "Test Author")
+        mp.setenv("AUTHOR_EMAIL", "test@example.com")
+
+        # Call the function
+        _update_content(project_dir, args, "README.md")
+
+    # Check README.md content
+    readme_path = project_dir / "README.md"
+    readme_content = readme_path.read_text()
+    print(f"Generated content:\n{readme_content}")  # Debug print
+
+    # Verify replacements
+    assert "# project" in readme_content  # parent_dir_name will be "project"
+    assert "Python 3.9" in readme_content
+    assert "Test Author" in readme_content
+    assert "test@example.com" in readme_content
