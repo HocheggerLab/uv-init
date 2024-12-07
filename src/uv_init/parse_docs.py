@@ -26,6 +26,7 @@ def parse_docs(args: Namespace, project_dir: Path) -> None:
         _copy_template(template, project_dir)
     if args.github:
         _add_github_workflows(project_dir)
+        _update_content(project_dir, args, ".github/workflows/ci.yml")
     _update_configs(project_dir, args)
     _init_version(args, project_dir)
 
@@ -65,6 +66,13 @@ def _parse_replacement(args: Namespace, content_path: Path) -> dict[str, str]:
 
     AUTHOR_NAME = os.getenv("AUTHOR_NAME", "Unknown")
     AUTHOR_EMAIL = os.getenv("AUTHOR_EMAIL", "No email provided")
+    python_versions = []
+    target_version = args.python
+    available_versions = ["3.9", "3.10", "3.11", "3.12", "3.13"]
+    for version in available_versions:
+        if version <= target_version:
+            python_versions.append(version)
+    python_versions_str = '", "'.join(python_versions)
 
     parent_dir_name = content_path.parent.name
     return {
@@ -75,6 +83,7 @@ def _parse_replacement(args: Namespace, content_path: Path) -> dict[str, str]:
         "{email}": AUTHOR_EMAIL,
         "{package_name}": parent_dir_name,
         "v$version": f"{parent_dir_name}-v$version",
+        'python-version: ["3.11", "3.12"]': f'python-version: ["{python_versions_str}"]',
     }
 
 

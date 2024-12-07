@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 from uv_init.parse_docs import (
     _copy_template,
+    _parse_replacement,
     _update_content,
 )
 
@@ -106,3 +107,24 @@ A project using Python {python_version}
     assert "Python 3.9" in readme_content
     assert "Test Author" in readme_content
     assert "test@example.com" in readme_content
+
+
+def test_python_version_matrix():
+    """Test Python version matrix generation for different Python versions"""
+    test_cases = [
+        ("3.13", '["3.10", "3.11", "3.12", "3.13"]'),
+        ("3.12", '["3.10", "3.11", "3.12"]'),
+        ("3.11", '["3.10", "3.11"]'),
+        ("3.10", '["3.10"]'),
+    ]
+
+    for python_version, expected_matrix in test_cases:
+        args = Namespace(python=python_version)
+        replacements = _parse_replacement(args, Path("/fake/path"))
+
+        actual_matrix = replacements['python-version: ["3.11", "3.12"]']
+        expected = f"python-version: {expected_matrix}"
+
+        assert (
+            actual_matrix == expected
+        ), f"For Python {python_version}, expected {expected} but got {actual_matrix}"
