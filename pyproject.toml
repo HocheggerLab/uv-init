@@ -75,7 +75,7 @@ exclude = [
     "*_vendor*",
 ]
 
-target-version = "py312"
+target-version = "py313"
 fix = true
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -98,7 +98,7 @@ update_changelog_on_bump = true
 annotated_tag = true
 [tool.mypy]
 strict = true
-python_version = 3.12
+python_version = 3.13
 exclude = [
     "tests/.*",
     ".venv/.*",
