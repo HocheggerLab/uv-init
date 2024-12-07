@@ -12,6 +12,8 @@ from dotenv import load_dotenv
 from rich import print as rprint
 from rich.panel import Panel
 
+# TODO synchromise pythonversions in ruff config
+
 
 def parse_docs(args: Namespace, project_dir: Path) -> None:
     """Parse the README.md file and update the content with project information."""

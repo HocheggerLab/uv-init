@@ -75,7 +75,7 @@ exclude = [
     "*_vendor*",
 ]
 
-target-version = "py313"
+
 fix = true
 [tool.pytest.ini_options]
 minversion = "6.0"
