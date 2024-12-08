@@ -8,7 +8,7 @@ from rich.text import Text
 
 
 class RichArgumentParser(argparse.ArgumentParser):
-    def format_help(self) -> str:
+    def format_help(self) -> Text:
         help_text = Text()
 
         # Program description
@@ -39,13 +39,22 @@ class RichArgumentParser(argparse.ArgumentParser):
         help_text.append("  -w, --workspace ", style="bold yellow")
         help_text.append("Create a workspace\n")
 
+        help_text.append("  -g, --github ", style="bold yellow")
+        help_text.append("Create and initialize a GitHub repository\n")
+
+        help_text.append("  --private ", style="bold yellow")
+        help_text.append(
+            "Create a private GitHub repository (requires --github)\n"
+        )
+
         # Epilog
         help_text.append(f"\n{self.epilog}\n", style="bold blue")
 
-        return str(Panel(help_text, title="UV Init Help", border_style="cyan"))
+        return help_text
 
     def print_help(self, file: Optional[IO[str]] = None) -> None:
-        rprint(self.format_help())
+        help_text = self.format_help()
+        rprint(Panel(help_text, title="UV Init Help", border_style="cyan"))
 
     def error(self, message: str) -> NoReturn:
         error_message = Text()
@@ -68,7 +77,7 @@ def parse_args() -> argparse.Namespace:
             "uv-init project_name "
             "[-t lib|package|app] "
             "[-p 3.13|3.12|3.11|3.10] "
-            "[-w]"
+            "[-w] [-g] [--private]"
         ),
         epilog="Thanks for using uv_init!",
     )
@@ -84,7 +93,7 @@ def parse_args() -> argparse.Namespace:
         "--type",
         help="The type of project to create (lib, package, or app)",
         default="lib",
-        choices=["lib", "package", "app"],
+        choices=["lib", "package"],
     )
 
     parser.add_argument(
@@ -111,7 +120,20 @@ def parse_args() -> argparse.Namespace:
         default=False,
     )
 
-    return parser.parse_args()
+    parser.add_argument(
+        "--private",
+        help="Create a private GitHub repository (requires --github)",
+        action="store_true",
+        default=False,
+    )
+
+    args = parser.parse_args()
+
+    # Validate that --private is only used with --github
+    if args.private and not args.github:
+        parser.error("--private can only be used with --github")
+
+    return args
 
 
 def validate_project_name(name: str) -> str:
