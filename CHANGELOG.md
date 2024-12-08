@@ -1,3 +1,22 @@
+## v0.3.0 (2024-12-08)
+
+### Feat
+
+- initial project setup
+
+### Fix
+
+- **router.py**: add dummy test fix github action yml files
+- install pytest coverage in ci.yml
+- correct uv venv activation in ci.yml
+- correct uv action in ci.yml
+- correct venv activation in ci.yml
+- bump version reverted to orignial in ci.yml
+- bump version in ci.yml
+- setup of project ready for first applications
+- **parse_docs.py**: update python versions in ci.yml during initialization
+- **tests**: update router test suite with proper mocking
+
 ## v0.1.0 (2024-12-07)
 
 ### Feat
