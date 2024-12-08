@@ -4,7 +4,7 @@ Brief Description of project
 
 ## Status
 
-Version: ![version](https://img.shields.io/badge/version-0.3.1-blue)
+Version: ![version](https://img.shields.io/badge/version-0.3.2-blue)
 
 Development state of the program
 
