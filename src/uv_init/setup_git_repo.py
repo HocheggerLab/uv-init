@@ -10,7 +10,7 @@ from rich.panel import Panel
 def setup_git_repo(
     project_name: str,
     project_path: Path,
-    private: bool = False,  # Added parameter
+    private: bool = False,
 ) -> None:
     """Initialize git repo and optionally set up GitHub remote"""
     # Load environment variables
