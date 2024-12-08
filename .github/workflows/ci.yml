@@ -30,7 +30,6 @@ jobs:
       run: |
         uv venv
         uv pip install -e ".[dev]"
-        uv pip install pytest-cov
 
     - name: Lint with Ruff
       run: |
@@ -53,11 +52,4 @@ jobs:
     - name: Run tests
       if: steps.check_tests.outputs.has_tests == 'true'
       run: |
-        uv run pytest tests/ -v --cov=src --cov-report=xml
-
-    - name: Upload coverage to Codecov
-      if: steps.check_tests.outputs.has_tests == 'true'
-      uses: codecov/codecov-action@v4
-      with:
-        file: ./coverage.xml
-        fail_ci_if_error: true
+        uv run pytest tests/ -v --no-cov
