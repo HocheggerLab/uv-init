@@ -8,7 +8,7 @@ from rich.text import Text
 
 
 class RichArgumentParser(argparse.ArgumentParser):
-    def format_help(self) -> Text:
+    def format_help(self) -> str:
         help_text = Text()
 
         # Program description
@@ -50,7 +50,7 @@ class RichArgumentParser(argparse.ArgumentParser):
         # Epilog
         help_text.append(f"\n{self.epilog}\n", style="bold blue")
 
-        return help_text
+        return str(help_text)
 
     def print_help(self, file: Optional[IO[str]] = None) -> None:
         help_text = self.format_help()

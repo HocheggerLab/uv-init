@@ -37,3 +37,4 @@ repos:
     hooks:
     -   id: mypy
         exclude: ^tests/
+        args: ["--config-file=pyproject.toml"]
