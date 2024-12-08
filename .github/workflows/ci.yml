@@ -30,6 +30,7 @@ jobs:
       run: |
         uv venv
         uv pip install -e ".[dev]"
+        uv pip install pytest-cov
 
     - name: Lint with Ruff
       run: |
