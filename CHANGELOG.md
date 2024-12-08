@@ -1,3 +1,9 @@
+## v0.3.4 (2024-12-08)
+
+### Fix
+
+- **__main__.py**: corrected the private functionality for github repos
+
 ## v0.3.3 (2024-12-08)
 
 ### Fix
