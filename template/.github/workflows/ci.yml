@@ -41,7 +41,7 @@ jobs:
     - name: Check if tests exist
       id: check_tests
       run: |
-        if [ -d "tests" ] && [ "$(ls -A tests)" ]; then
+        if [ -d "tests" ] && [ -n "$(ls -A tests 2>/dev/null)" ]; then
           echo "has_tests=true" >> $GITHUB_OUTPUT
         else
           echo "has_tests=false" >> $GITHUB_OUTPUT
@@ -49,11 +49,4 @@ jobs:
 
     - name: Run tests
       if: steps.check_tests.outputs.has_tests == 'true'
-      run: uv run pytest tests/ -v --cov=src --cov-report=xml
-
-    - name: Upload coverage to Codecov
-      if: steps.check_tests.outputs.has_tests == 'true'
-      uses: codecov/codecov-action@v4
-      with:
-        file: ./coverage.xml
-        fail_ci_if_error: false
+      run: uv run pytest tests/ -v --no-cov

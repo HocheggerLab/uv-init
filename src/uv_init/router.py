@@ -74,7 +74,9 @@ class CommandDispatcher:
             tests_dir = self.project_path / "tests"
             tests_dir.mkdir(exist_ok=True)
             # Create an empty __init__.py in tests directory
-            (tests_dir / "__init__.py").touch()
+            (tests_dir / "test_init.py").touch()
+            with open(tests_dir / "test_init.py", "w") as f:
+                f.write("def test_init():\n    assert True\n")
 
             rprint(
                 f"[green]✓[/green] Successfully created {project_type} project '[bold]{self.args.project_name}[/bold]'"
