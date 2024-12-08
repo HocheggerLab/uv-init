@@ -1,3 +1,9 @@
+## v0.3.1 (2024-12-08)
+
+### Fix
+
+- **cli.py**: fix print bug for help message add github options remove ap option
+
 ## v0.3.0 (2024-12-08)
 
 ### Feat
