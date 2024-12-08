@@ -42,7 +42,7 @@ def test_parse_args_with_options(capsys):
             "uv-init",
             "my-project",
             "--type",
-            "app",
+            "package",
             "--python",
             "3.11",
             "--workspace",
@@ -50,7 +50,7 @@ def test_parse_args_with_options(capsys):
     ):
         args = parse_args()
         assert args.project_name == "my-project"
-        assert args.type == "app"
+        assert args.type == "package"
         assert args.python == "3.11"
         assert args.workspace is True
 

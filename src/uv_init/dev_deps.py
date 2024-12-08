@@ -15,7 +15,6 @@ def add_dev_dependencies(project_name: str, project_path: Path) -> None:
                 "--dev",
                 "ruff",
                 "pytest",
-                "pytest-cov",
                 "mypy",
                 "commitizen",
                 "pre-commit",
