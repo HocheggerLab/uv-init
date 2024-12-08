@@ -99,7 +99,7 @@ def _update_content(
                 if package.is_dir()
             ]
             if (project_dir / "packages").exists()
-            and content_type != "LICENSE"
+            and content_type not in ["LICENSE", ".github/workflows/ci.yml"]
             else []
         )
         for file in content_path:

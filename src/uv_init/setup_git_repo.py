@@ -25,7 +25,7 @@ def setup_git_repo(
             cwd=project_path,
         )
         subprocess.run(
-            ["git", "commit", "-m", "feat: initial commit"],
+            ["git", "commit", "-m", "chore: initial commit"],
             check=True,
             cwd=project_path,
         )
