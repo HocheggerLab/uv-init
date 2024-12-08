@@ -1,3 +1,9 @@
+## v0.3.3 (2024-12-08)
+
+### Fix
+
+- **cli.py**: fix type mismatch in help setup fix mypy pre-commit config
+
 ## v0.3.2 (2024-12-08)
 
 ### Fix
