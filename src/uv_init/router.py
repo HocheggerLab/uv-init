@@ -107,7 +107,8 @@ class CommandDispatcher:
         )
 
         if common_utils == "y":
-            self._add_common_utils()
+            utils_name = Prompt.ask("Enter the name of the utils library: ")
+            self._add_common_utils(utils_name)
         other_projects = Prompt.ask(
             "Do you want to add other projects?",
             choices=["y", "n"],
@@ -117,14 +118,14 @@ class CommandDispatcher:
             project_name = Prompt.ask("Enter the project-name: ")
             self._add_other_projects(project_name)
 
-    def _add_common_utils(self) -> None:
+    def _add_common_utils(self, utils_name: str) -> None:
         """Add common utilities to the workspace"""
         try:
             subprocess.run(
                 [
                     "uv",
                     "init",
-                    "common-utils",
+                    utils_name,
                     "--lib",
                 ],
                 check=True,
@@ -134,7 +135,7 @@ class CommandDispatcher:
                 [
                     "uv",
                     "add",
-                    "./packages/common-utils",
+                    f"./packages/{utils_name}",
                     "--editable",
                 ],
                 check=True,

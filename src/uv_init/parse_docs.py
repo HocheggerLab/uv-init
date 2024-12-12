@@ -12,8 +12,6 @@ from dotenv import load_dotenv
 from rich import print as rprint
 from rich.panel import Panel
 
-# TODO synchromise pythonversions in ruff config
-
 
 def parse_docs(args: Namespace, project_dir: Path) -> None:
     """Parse the README.md file and update the content with project information."""
@@ -75,6 +73,7 @@ def _parse_replacement(args: Namespace, content_path: Path) -> dict[str, str]:
     python_versions_str = '", "'.join(python_versions)
 
     parent_dir_name = content_path.parent.name
+    module_name = args.project_name.replace("-", "_")
     return {
         "# Title": f"# {parent_dir_name}",
         "{project_name}": parent_dir_name,
@@ -82,6 +81,7 @@ def _parse_replacement(args: Namespace, content_path: Path) -> dict[str, str]:
         "{author}": AUTHOR_NAME,
         "{email}": AUTHOR_EMAIL,
         "{package_name}": parent_dir_name,
+        "{module_name}": module_name,
         "v$version": f"{parent_dir_name}-v$version",
         'python-version: ["3.11", "3.12"]': f'python-version: ["{python_versions_str}"]',
     }
