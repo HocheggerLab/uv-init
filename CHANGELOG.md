@@ -1,3 +1,9 @@
+## v0.3.5 (2024-12-13)
+
+### Fix
+
+- **parse_docs.py**: fix problem with underscore in __init__.py versioning
+
 ## v0.3.4 (2024-12-08)
 
 ### Fix
