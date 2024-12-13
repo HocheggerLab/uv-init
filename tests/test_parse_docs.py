@@ -112,19 +112,17 @@ A project using Python {python_version}
 def test_python_version_matrix():
     """Test Python version matrix generation for different Python versions"""
     test_cases = [
-        ("3.13", '["3.10", "3.11", "3.12", "3.13"]'),
-        ("3.12", '["3.10", "3.11", "3.12"]'),
-        ("3.11", '["3.10", "3.11"]'),
-        ("3.10", '["3.10"]'),
+        ("3.13", 'python-version: ["3.13"]'),
+        ("3.12", 'python-version: ["3.12"]'),
+        ("3.11", 'python-version: ["3.11"]'),
+        ("3.10", 'python-version: ["3.10"]'),
     ]
 
-    for python_version, expected_matrix in test_cases:
-        args = Namespace(python=python_version)
+    for python_version, expected in test_cases:
+        args = Namespace(python=python_version, project_name="test-project")
         replacements = _parse_replacement(args, Path("/fake/path"))
 
-        actual_matrix = replacements['python-version: ["3.11", "3.12"]']
-        expected = f"python-version: {expected_matrix}"
-
+        actual_matrix = replacements['python-version: ["3.12"]']
         assert (
             actual_matrix == expected
         ), f"For Python {python_version}, expected {expected} but got {actual_matrix}"

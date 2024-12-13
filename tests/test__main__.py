@@ -174,7 +174,9 @@ def test_workspace_project(temp_project_dir):
         github=False,
     )
 
-    with patch("rich.prompt.Prompt.ask", side_effect=["y", "n"]):
+    with patch(
+        "rich.prompt.Prompt.ask", side_effect=["y", "common_utils", "n"]
+    ):
         initialize_uv_project(args)
 
     # Verify workspace structure

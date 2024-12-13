@@ -64,13 +64,9 @@ def _parse_replacement(args: Namespace, content_path: Path) -> dict[str, str]:
 
     AUTHOR_NAME = os.getenv("AUTHOR_NAME", "Unknown")
     AUTHOR_EMAIL = os.getenv("AUTHOR_EMAIL", "No email provided")
-    python_versions = []
+
+    # Simplify to just use the target Python version
     target_version = args.python
-    available_versions = ["3.9", "3.10", "3.11", "3.12", "3.13"]
-    for version in available_versions:
-        if version <= target_version:
-            python_versions.append(version)
-    python_versions_str = '", "'.join(python_versions)
 
     parent_dir_name = content_path.parent.name
     module_name = args.project_name.replace("-", "_")
@@ -83,7 +79,7 @@ def _parse_replacement(args: Namespace, content_path: Path) -> dict[str, str]:
         "{package_name}": parent_dir_name,
         "{module_name}": module_name,
         "v$version": f"{parent_dir_name}-v$version",
-        'python-version: ["3.11", "3.12"]': f'python-version: ["{python_versions_str}"]',
+        'python-version: ["3.12"]': f'python-version: ["{target_version}"]',
     }
 
 
