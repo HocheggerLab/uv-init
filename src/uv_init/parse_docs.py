@@ -20,8 +20,16 @@ def parse_docs(args: Namespace, project_dir: Path) -> None:
         "LICENSE",
         ".gitignore",
         ".pre-commit-config.yaml",
+        ".env",
     ]:
         _copy_template(template, project_dir)
+
+    # Copy config.py to src/project_name
+    module_name = args.project_name.replace("-", "_")
+    src_dir = project_dir / "src" / module_name
+    src_dir.mkdir(parents=True, exist_ok=True)
+    _copy_template("config.py", src_dir)
+
     if args.github:
         _add_github_workflows(project_dir)
         _update_content(project_dir, args, ".github/workflows/ci.yml")
@@ -119,22 +127,36 @@ def _update_content(
 
 
 def _init_version(args: Namespace, project_dir: Path) -> None:
-    """Initialize the version file with the initial version."""
+    """Initialize the version file with imports and version."""
     try:
         package_name = args.project_name.replace("-", "_")
-        package_path = [project_dir / "src" / package_name / "__init__.py"]
+
+        # Handle root project's __init__.py
+        root_init = project_dir / "src" / package_name / "__init__.py"
+        with root_init.open("w") as f:
+            f.write(
+                '"""Initialize logging and environment variables."""\n\n'
+                "from .config import set_env_vars\n\n"
+                '__version__ = "0.1.0"\n\n'
+                "# Initialize environment variables\n"
+                f'set_env_vars("{package_name}")\n'
+            )
+        rprint("[green]Root __init__.py initialized with config setup[/green]")
+
+        # Handle sub-packages (if workspace)
         if (project_dir / "packages").exists():
             for sub_package in (project_dir / "packages").iterdir():
-                sub_package_name = sub_package.name.replace("-", "_")
-                package_path.append(
-                    sub_package / f"src/{sub_package_name}/__init__.py"
-                )
-        for version_path in package_path:
-            with version_path.open("w") as f:
-                f.write("__version__ = '0.1.0'")
-            rprint(
-                f"[green]Version file initialized for {version_path}[/green]"
-            )
+                if sub_package.is_dir():
+                    sub_package_name = sub_package.name.replace("-", "_")
+                    sub_init = (
+                        sub_package / f"src/{sub_package_name}/__init__.py"
+                    )
+                    with sub_init.open("w") as f:
+                        f.write('__version__ = "0.1.0"\n')
+                    rprint(
+                        f"[green]Version file initialized for {sub_package_name}[/green]"
+                    )
+
     except FileNotFoundError:
         rprint(
             Panel.fit(

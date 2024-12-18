@@ -3,37 +3,54 @@
 A command-line tool for initializing Python projects using the new uv project management tool:
 https://docs.astral.sh/uv/
 This package integrates uv commands with a template for development configs, commitizen versioning, precommit hooks and CI
+
 ---
+
 ## Status
 Version: ![version](https://img.shields.io/badge/version-0.3.5-blue)
 [![Python](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
 ---
+
 ## Development state of the program
+
 This project is in active development. Current version: 0.3.5
 Features and APIs may change. Please report issues on GitHub.
 Tests currently run only on Mac and Linux with Python 3.13.
+
 ---
+
 ## Versioning
 This project uses [Semantic Versioning](https://semver.org/) and [Conventional Commits](https://www.conventionalcommits.org/).
+
 ---
+
 ## Authors
 Helfrid Hochegger
+
 ---
+
 ## Dependencies
 - Requires Python 3.13 (not tested on other versions)
 - UV package manager installed (https://github.com/astral-sh/uv)
 - GitHub account and personal access token (if using GitHub features)
+
 ---
+
 ## Contact
 Created by Helfrid Hochegger
 Email: hh65@sussex.ac.uk
 GitHub Issues: https://github.com/Helfrid/uv-init/issues
+
 ---
+
 ## License
 
 This project is licensed under the MIT License
+
 ---
+
 ## Features
 
 - Create Python libraries, packages, or applications
@@ -44,10 +61,13 @@ This project is licensed under the MIT License
   - Pytest for testing
   - Commitizen for conventional commits
   - Pre-commit hooks
+  - Structured logging with environment configuration
 - GitHub repository initialization with CI/CD workflows
 - Semantic versioning support
 - Python 3.10+ support for project initialisation
+
 ---
+
 ## Installation
 
 This package is not deployed on PyPI. To use, clone this repository and install using:
@@ -60,6 +80,7 @@ AUTHOR_EMAIL='johndoe@email.com'
 GITHUB_TOKEN='insert github token'
 ```
 ---
+
 ## Usage
 
 Basic usage to install a repo with pre-configured Ruff, Mypy, Commitizen and Pre-Commit Hooks settings, optional setup of github repo and basic CI pipeline including version bumps on conventional commit messages.
@@ -118,7 +139,9 @@ uv-init my-workspace -w -g
 ```
 This will generate a uv workspace (see: https://docs.astral.sh/uv/concepts/projects/workspaces/)
 The user will be prompted to add a common-utils library and an additional project.
+
 ---
+
 ## Project Structure
 
 The generated project follows this structure:
@@ -145,6 +168,7 @@ workspace_name/
 └── .pre-commit-config.yaml
 ```
 ---
+
 ## Development Tools
 
 UV Init sets up the following development tools:
@@ -154,6 +178,11 @@ UV Init sets up the following development tools:
 - **Pytest**: Testing framework
 - **Commitizen**: Conventional commit tooling
 - **Pre-commit**: Git hooks manager
+- **Logging**: Configurable logging setup with:
+  - Console and file handlers
+  - Environment variable configuration
+  - Rotating file handler
+  - Different log levels for development/production
 
 ### Development Tools Configuration
 
@@ -172,14 +201,24 @@ UV Init sets up the following development tools:
 - Automatic version bumping
 - Changelog generation
 - Version tracking in multiple files
+
+#### Logging
+- Console and file logging configurable via environment variables
+- Rotating file handler with customizable size and backup count
+- Log format includes timestamp, level, filename, and line number
+- Environment-specific configuration support (.env.development, .env.production)
+
 ---
+
 ## Workspace Features
 When creating a workspace (`-w` flag), UV Init:
 - Sets up a monorepo structure
 - Offers to create a common utilities package
 - Supports adding multiple projects
 - Configures dependencies between workspace packages
+
 ---
+
 ## GitHub Integration
 When using the `-g` flag, UV Init:
 1. Initializes a Git repository
@@ -204,7 +243,9 @@ additional --private flag for optional private repos
 - Automatic version bumping on main branch
 - Creates releases based on conventional commits
 - Generates changelogs
+
 ---
+
 ## Contributing
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)

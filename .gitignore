@@ -108,6 +108,11 @@ celerybeat.pid
 *.sage.py
 
 # Environments
+
+# But don't ignore template .env files
+!./template/.env
+!./template/.env.*
+
 .env
 .venv
 env/
@@ -115,6 +120,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+
 
 # Spyder project settings
 .spyderproject

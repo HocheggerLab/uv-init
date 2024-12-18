@@ -18,6 +18,7 @@ def add_dev_dependencies(project_name: str, project_path: Path) -> None:
                 "mypy",
                 "commitizen",
                 "pre-commit",
+                "python-dotenv",
             ],
             check=True,
             cwd=project_path,
