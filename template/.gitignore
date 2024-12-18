@@ -172,6 +172,7 @@ yarn-error.log*
 /coverage/
 
 # Miscellaneous
+!template/.env
 .DS_Store
 .env.local
 .env.development.local
