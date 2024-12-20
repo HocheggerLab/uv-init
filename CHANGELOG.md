@@ -1,3 +1,10 @@
+## v0.3.6 (2024-12-20)
+
+### Fix
+
+- final setup of logging config with template/.env file committed with tests working
+- final setup of logging config with template/.env file committed
+
 ## v0.3.5 (2024-12-13)
 
 ### Fix
