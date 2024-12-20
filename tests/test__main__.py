@@ -87,8 +87,9 @@ def test_basic_lib_project(temp_project_dir):
     init_content = (
         project_path / "src" / "test_lib" / "__init__.py"
     ).read_text()
-    assert (
-        "__version__ = '0.1.0'" in init_content
+    assert any(
+        version in init_content
+        for version in ['__version__ = "0.1.0"', "__version__ = '0.1.0'"]
     ), "Version string not found in __init__.py"
 
     # Verify README content
@@ -156,8 +157,9 @@ def test_basic_app_project(temp_project_dir):
     init_content = (
         project_path / "src" / "test_app" / "__init__.py"
     ).read_text()
-    assert (
-        "__version__ = '0.1.0'" in init_content
+    assert any(
+        version in init_content
+        for version in ['__version__ = "0.1.0"', "__version__ = '0.1.0'"]
     ), "Version string not found in __init__.py"
 
 

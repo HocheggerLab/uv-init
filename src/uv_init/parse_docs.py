@@ -135,9 +135,8 @@ def _init_version(args: Namespace, project_dir: Path) -> None:
         root_init = project_dir / "src" / package_name / "__init__.py"
         with root_init.open("w") as f:
             f.write(
-                '"""Initialize logging and environment variables."""\n\n'
-                "from .config import set_env_vars\n\n"
                 '__version__ = "0.1.0"\n\n'
+                "from .config import set_env_vars\n\n"
                 "# Initialize environment variables\n"
                 f'set_env_vars("{package_name}")\n'
             )

@@ -15,38 +15,38 @@ def test_add_dev_dependencies_success():
 
         add_dev_dependencies("fake_project", project_path)
 
-        mock_run.assert_has_calls(
+        # Check dev dependencies installation
+        assert mock_run.call_args_list[0] == call(
             [
-                call(
-                    [
-                        "uv",
-                        "add",
-                        "--dev",
-                        "ruff",
-                        "pytest",
-                        "mypy",
-                        "commitizen",
-                        "pre-commit",
-                    ],
-                    check=True,
-                    cwd=project_path,
-                ),
-                call(
-                    [
-                        "uv",
-                        "run",
-                        "pre-commit",
-                        "install",
-                        "--hook-type",
-                        "pre-commit",
-                        "--hook-type",
-                        "commit-msg",
-                    ],
-                    check=True,
-                    cwd=project_path,
-                ),
-            ]
-        )
+                "uv",
+                "add",
+                "--dev",
+                "ruff",
+                "pytest",
+                "mypy",
+                "commitizen",
+                "pre-commit",
+                "python-dotenv",
+            ],
+            check=True,
+            cwd=project_path,
+        ), "Failed to install dev dependencies with uv add"
+
+        # Check pre-commit hooks installation
+        assert mock_run.call_args_list[1] == call(
+            [
+                "uv",
+                "run",
+                "pre-commit",
+                "install",
+                "--hook-type",
+                "pre-commit",
+                "--hook-type",
+                "commit-msg",
+            ],
+            check=True,
+            cwd=project_path,
+        ), "Failed to install pre-commit hooks"
 
 
 def test_add_dev_dependencies_failure():
