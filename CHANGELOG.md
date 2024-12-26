@@ -1,3 +1,9 @@
+## v0.3.7 (2024-12-26)
+
+### Fix
+
+- python-dotenv added as a project dependency and removed from dev dependencies
+
 ## v0.3.6 (2024-12-20)
 
 ### Fix
