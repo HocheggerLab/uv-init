@@ -15,8 +15,15 @@ def test_add_dev_dependencies_success():
 
         add_dev_dependencies("fake_project", project_path)
 
-        # Check dev dependencies installation
+        # Check python-dotenv installation
         assert mock_run.call_args_list[0] == call(
+            ["uv", "add", "python-dotenv"],
+            check=True,
+            cwd=project_path,
+        ), "Failed to install python-dotenv"
+
+        # Check dev dependencies installation
+        assert mock_run.call_args_list[1] == call(
             [
                 "uv",
                 "add",
@@ -26,14 +33,13 @@ def test_add_dev_dependencies_success():
                 "mypy",
                 "commitizen",
                 "pre-commit",
-                "python-dotenv",
             ],
             check=True,
             cwd=project_path,
         ), "Failed to install dev dependencies with uv add"
 
         # Check pre-commit hooks installation
-        assert mock_run.call_args_list[1] == call(
+        assert mock_run.call_args_list[2] == call(
             [
                 "uv",
                 "run",

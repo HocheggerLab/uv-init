@@ -8,6 +8,12 @@ from rich.panel import Panel
 def add_dev_dependencies(project_name: str, project_path: Path) -> None:
     """Add dev dependencies to the project"""
     try:
+        # Add python-dotenv as a regular dependency first
+        subprocess.run(
+            ["uv", "add", "python-dotenv"],
+            check=True,
+            cwd=project_path,
+        )
         result = subprocess.run(
             [
                 "uv",
@@ -18,7 +24,6 @@ def add_dev_dependencies(project_name: str, project_path: Path) -> None:
                 "mypy",
                 "commitizen",
                 "pre-commit",
-                "python-dotenv",
             ],
             check=True,
             cwd=project_path,
