@@ -73,6 +73,7 @@ exclude = [
     "venv",
     "*vendored*",
     "*_vendor*",
+    "template/mypy-config.toml",
 ]
 
 
