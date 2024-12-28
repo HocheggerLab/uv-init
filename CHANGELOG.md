@@ -1,3 +1,9 @@
+## v0.3.8 (2024-12-28)
+
+### Fix
+
+- python version adapted dynamically in mypy config
+
 ## v0.3.7 (2024-12-26)
 
 ### Fix
