@@ -31,8 +31,8 @@ def parse_docs(args: Namespace, project_dir: Path) -> None:
     _copy_template("config.py", src_dir)
     vs_code_dir = project_dir / ".vscode"
     vs_code_dir.mkdir(parents=True, exist_ok=True)
-    _copy_template("template/settings.json", vs_code_dir)
-    _copy_template("template/launch.json", vs_code_dir)
+    _copy_template("settings.json", vs_code_dir)
+    _copy_template("launch.json", vs_code_dir)
     if args.github:
         _add_github_workflows(project_dir)
         _update_content(project_dir, args, ".github/workflows/ci.yml")

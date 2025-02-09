@@ -39,7 +39,10 @@
   },
 
   // ✅ Set default Python interpreter (modify as needed)
-  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  "python.defaultInterpreterPath": "./.venv/bin/python",
+  "python.pythonPath": "./.venv/bin/python",  // Add this as backup
+  "python.terminal.activateEnvironment": true,  // Make sure environment activation is enabled
+
 
   // ✅ Improve workspace search by excluding non-code directories
   "search.exclude": {
