@@ -1,51 +1,72 @@
 name: Release
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+    branches: [main]
 
 permissions:
   contents: write
 
 jobs:
   release:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'bump') && (contains(github.event.head_commit.message, 'feat:') || contains(github.event.head_commit.message, 'fix') || contains(github.event.head_commit.message, 'BREAKING CHANGE'))"
-
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.12"
+      - name: Configure Git
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install commitizen
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
 
-    - name: Configure Git
-      run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+      - name: Install dependencies
+        run: pip install commitizen
 
-    - name: Check if there are commits to bump
-      id: check_bump
-      run: |
-        cz changelog --dry-run || echo "NO_BUMP"
+      - name: Get commit message
+        run: echo "COMMIT_MSG=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
 
-    - name: Bump version
-      run: cz bump --yes || true
+      - name: Log commit message format check
+        run: |
+          if echo "${{ env.COMMIT_MSG }}" | grep -qE "^[a-z]+(\([^)]+\))?: "; then
+            echo "Conventional commit detected – a version bump will be applied."
+          else
+            echo "Non-conventional commit detected – no version bump will be applied."
+          fi
 
-    - name: Push changes
-      if: success()
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ github.ref }}
-        tags: true
+      - name: Attempt version bump (if applicable)
+        run: |
+          set -e
+          COMMIT_MSG="${{ env.COMMIT_MSG }}"
+          # Only perform a bump if the commit message is conventional.
+          if echo "$COMMIT_MSG" | grep -qE "^[a-z]+(\([^)]+\))?: "; then
+            PACKAGE=""
+            # Check for a package scope in the commit message (e.g., "fix(package): ...")
+            if echo "$COMMIT_MSG" | grep -qE "^[a-z]+\([^)]+\)"; then
+              PACKAGE=$(echo "$COMMIT_MSG" | sed -n 's/^[a-z]\+(\([^)]\+\)).*/\1/p')
+            fi
+            # Use the package if it exists, otherwise bump the root package.
+            if [ -n "$PACKAGE" ] && [ -d "packages/$PACKAGE" ]; then
+              echo "Bumping version for package: $PACKAGE"
+              cd "packages/$PACKAGE"
+            else
+              echo "No package scope found or package directory does not exist. Using root package."
+            fi
+            cz bump --yes || echo "No version bump occurred."
+          else
+            echo "Skipping version bump because commit message is not conventional."
+          fi
+
+      - name: Push changes
+        run: git push --follow-tags

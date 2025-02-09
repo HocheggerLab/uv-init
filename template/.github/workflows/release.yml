@@ -28,35 +28,44 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: '3.12' # dynamically replaced
 
       - name: Install dependencies
         run: pip install commitizen
 
       - name: Get commit message
+        run: echo "COMMIT_MSG=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
+
+      - name: Validate commit message format
         run: |
-          echo "COMMIT_MSG=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
+          # lint-disable: context-access
+          if echo "${{ env.COMMIT_MSG }}" | grep -qE "^[a-z]+(\([^)]+\))?: "; then
+            echo "Commit message follows conventional commit format."
+          else
+            echo "Commit message does not follow conventional commit format."
+            exit 1
+          fi
 
       - name: Determine package and bump version
         run: |
-          # Get the commit message
+          # lint-disable: context-access
           COMMIT_MSG="${{ env.COMMIT_MSG }}"
-
-          # Extract package name using grep instead of bash regex
+          # Check if a package scope is provided (e.g. "fix(package): ..." )
           if echo "$COMMIT_MSG" | grep -q "^[a-z]\+(\([^)]\+\))"; then
             PACKAGE=$(echo "$COMMIT_MSG" | sed -n 's/^[a-z]\+(\([^)]\+\)).*/\1/p')
             if [ -d "packages/$PACKAGE" ]; then
               echo "Bumping version for package: $PACKAGE"
               cd "packages/$PACKAGE"
-              cz bump --yes
+              cz bump --yes || true
             else
-              echo "Bumping version for root package"
-              cz bump --yes
+              echo "Package '$PACKAGE' not found. Bumping version for root package instead."
+              cz bump --yes || true
             fi
           else
-            echo "No package scope found, bumping root package"
-            cz bump --yes
+            echo "No package scope found. Bumping version for root package."
+            cz bump --yes || true
           fi
 
       - name: Push changes
+        if: success()  # Only push if all previous steps succeeded
         run: git push --follow-tags

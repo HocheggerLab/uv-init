@@ -33,6 +33,7 @@ def parse_docs(args: Namespace, project_dir: Path) -> None:
     if args.github:
         _add_github_workflows(project_dir)
         _update_content(project_dir, args, ".github/workflows/ci.yml")
+        _update_content(project_dir, args, ".github/workflows/release.yml")
     _update_configs(project_dir, args)
     _init_version(args, project_dir)
 
@@ -88,6 +89,7 @@ def _parse_replacement(args: Namespace, content_path: Path) -> dict[str, str]:
         "{module_name}": module_name,
         "v$version": f"{parent_dir_name}-v$version",
         'python-version: ["3.12"]': f'python-version: ["{target_version}"]',
+        "python-version: '3.12'": f"python-version: '{target_version}'",
     }
 
 
