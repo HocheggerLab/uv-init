@@ -29,7 +29,10 @@ def parse_docs(args: Namespace, project_dir: Path) -> None:
     src_dir = project_dir / "src" / module_name
     src_dir.mkdir(parents=True, exist_ok=True)
     _copy_template("config.py", src_dir)
-
+    vs_code_dir = project_dir / ".vscode"
+    vs_code_dir.mkdir(parents=True, exist_ok=True)
+    _copy_template("template/settings.json", vs_code_dir)
+    _copy_template("template/launch.json", vs_code_dir)
     if args.github:
         _add_github_workflows(project_dir)
         _update_content(project_dir, args, ".github/workflows/ci.yml")
@@ -53,8 +56,8 @@ def _copy_template(template: str, project_dir: Path) -> None:
     except FileNotFoundError:
         rprint(
             Panel.fit(
-                "[red]{template} not found[/red]",
-                title="{template}} Template Not Found",
+                f"[red]{template} not found[/red]",
+                title=f"{template} Template Not Found",
                 border_style="red",
             )
         )

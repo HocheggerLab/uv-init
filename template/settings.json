@@ -1,0 +1,107 @@
+{
+  // ✅ Enable Pylance for fast type checking
+  "python.analysis.enablePylance": true,
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.disableMypy": true,
+  "mypy.enabled": false,
+  "mypy.dmypy": false,
+  "mypy.runUsingActiveInterpreter": false,
+
+  // ✅ Enable Pylance auto-import suggestions
+  "python.analysis.autoImportCompletions": true,
+
+  // ✅ Disable missing type stub warnings for third-party libraries
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportMissingTypeStubs": "none"
+  },
+
+
+  // ✅ Automatically format code with Black on save
+  "editor.formatOnSave": true,
+  "python.formatting.provider": "none",
+
+  // ✅ Enable Ruff as a fast linter
+  "ruff.enable": true,
+  "ruff.organizeImports": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
+  },
+
+  // ✅ Exclude large directories from IntelliSense to improve performance
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/.mypy_cache/**": true,
+    "**/.ruff_cache/**": true,
+    "**/__pycache__/**": true
+  },
+
+  // ✅ Set default Python interpreter (modify as needed)
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+
+  // ✅ Improve workspace search by excluding non-code directories
+  "search.exclude": {
+    "**/.mypy_cache": true,
+    "**/.ruff_cache": true,
+    "**/node_modules": true,
+    "**/__pycache__": true,
+    "**/.git": true
+  },
+// ✅ Enable test discovery and debugging
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.nosetestsEnabled": false,
+  "python.testing.autoTestDiscoverOnSaveEnabled": false,
+
+  // ✅ Enable better code navigation
+  "python.analysis.indexing": true,
+  "python.analysis.logLevel": "Information",
+  "python.analysis.autoSearchPaths": true,
+
+  // ✅ Enable better debugging experience
+  "debug.console.fontSize": 12,
+  "debug.console.wordWrap": true,
+  "debug.showBreakpointsInOverviewRuler": true,
+
+  // ✅ Enable better editor experience
+  "editor.suggestSelection": "first",
+  "editor.suggest.showStatusBar": true,
+  "editor.suggest.showWords": false,
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": false,
+    "strings": true
+  },
+
+  // ✅ Enable better file handling
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/.git": true,
+    "**/.hg": true,
+    "**/.svn": true
+  },
+
+  // ✅ Enable better terminal experience
+  "terminal.integrated.fontSize": 12,
+  "terminal.integrated.fontWeight": "normal",
+  "terminal.integrated.fontWeightBold": "bold",
+  "terminal.integrated.scrollback": 10000,
+  "terminal.integrated.cursorBlinking": true,
+
+  // ✅ Enable better workspace experience
+  "files.associations": {
+    "*.py": "python",
+    "*.ipynb": "python",
+    "*.ipynb.py": "python"
+  },
+
+  // ✅ Enable better git experience
+  "git.enableSmartCommit": true,
+  "git.enableSmartCherryPick": true,
+  "git.enableSmartPull": true,
+  "git.enableSmartPush": true
+}

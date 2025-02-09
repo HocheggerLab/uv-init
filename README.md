@@ -95,7 +95,7 @@ cd "parent-directory"
 UV_ORIGINAL_CWD="$PWD"
 uv run --directory path_to/uv-init uv-init project-name [options]
 ```
-Alternativly, add this function to your .zshrc or .bashrc config file
+Alternatively, add this function to your .zshrc or .bashrc config file
 
 bash
 ```

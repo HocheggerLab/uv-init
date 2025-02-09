@@ -66,7 +66,7 @@
 - correct uv venv activation in ci.yml
 - correct uv action in ci.yml
 - correct venv activation in ci.yml
-- bump version reverted to orignial in ci.yml
+- bump version reverted to original in ci.yml
 - bump version in ci.yml
 - setup of project ready for first applications
 - **parse_docs.py**: update python versions in ci.yml during initialization
