@@ -1,6 +1,6 @@
 [project]
 name = "uv-init"
-version = "0.3.8"
+version = "0.3.9"
 description = "Add your description here"
 readme = "README.md"
 authors = [
@@ -85,7 +85,7 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.3.8"
+version = "0.3.9"
 tag_format = "v$version"
 version_files = [
     "src/uv_init/__init__.py:__version__",

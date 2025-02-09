@@ -1,3 +1,9 @@
+## v0.3.9 (2025-02-09)
+
+### Fix
+
+- update python in release.yml, relax bump commit conditions
+
 ## v0.3.8 (2024-12-28)
 
 ### Fix
