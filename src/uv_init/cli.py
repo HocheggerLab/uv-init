@@ -1,3 +1,12 @@
+"""Initialize a new Python project with uv.
+
+Raises:
+    argparse.ArgumentTypeError: If the project name contains spaces or under-scores
+
+Returns:
+    argparse.Namespace: The parsed arguments
+"""
+
 import argparse
 import sys
 from typing import IO, NoReturn, Optional
