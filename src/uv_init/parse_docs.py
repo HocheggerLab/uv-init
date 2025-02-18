@@ -77,11 +77,10 @@ def _parse_replacement(args: Namespace, content_path: Path) -> dict[str, str]:
     AUTHOR_NAME = os.getenv("AUTHOR_NAME", "Unknown")
     AUTHOR_EMAIL = os.getenv("AUTHOR_EMAIL", "No email provided")
 
-    # Simplify to just use the target Python version
     target_version = args.python
 
     parent_dir_name = content_path.parent.name
-    module_name = args.project_name.replace("-", "_")
+    module_name = parent_dir_name.replace("-", "_")
     return {
         "# Title": f"# {parent_dir_name}",
         "{project_name}": parent_dir_name,
@@ -90,6 +89,7 @@ def _parse_replacement(args: Namespace, content_path: Path) -> dict[str, str]:
         "{email}": AUTHOR_EMAIL,
         "{package_name}": parent_dir_name,
         "{module_name}": module_name,
+        "src/{module_name}/__init__.py": f"src/{module_name}/__init__.py",
         "v$version": f"{parent_dir_name}-v$version",
         'python-version: ["3.12"]': f'python-version: ["{target_version}"]',
         "python-version: '3.12'": f"python-version: '{target_version}'",
@@ -101,6 +101,13 @@ def _update_content(
 ) -> None:
     """Update the content of a file with project information."""
     try:
+        # Files that should only exist in root directory
+        root_only_files = [
+            "LICENSE",
+            ".github/workflows/ci.yml",
+            ".github/workflows/release.yml",
+        ]
+
         content_path = [project_dir / content_type] + (
             [
                 package / content_type
@@ -108,7 +115,7 @@ def _update_content(
                 if package.is_dir()
             ]
             if (project_dir / "packages").exists()
-            and content_type not in ["LICENSE", ".github/workflows/ci.yml"]
+            and content_type not in root_only_files
             else []
         )
         for file in content_path:
@@ -143,7 +150,7 @@ def _init_version(args: Namespace, project_dir: Path) -> None:
                 '__version__ = "0.1.0"\n\n'
                 "from .config import set_env_vars\n\n"
                 "# Initialize environment variables\n"
-                f'set_env_vars("{package_name}")\n'
+                "set_env_vars()\n"
             )
         rprint("[green]Root __init__.py initialized with config setup[/green]")
 

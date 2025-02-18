@@ -7,13 +7,13 @@ from typing import Optional
 from dotenv import load_dotenv
 
 
-def set_env_vars(project_name: str) -> None:
+def set_env_vars() -> None:
     """Load environment variables based on the ENV variable."""
     project_root = Path(__file__).parent.parent.parent.resolve()
 
     # Set default environment variables if .env doesn't exist
     os.environ.setdefault("LOG_LEVEL", "INFO")
-    os.environ.setdefault("LOG_FILE_PATH", f"logs/{project_name}.log")
+    os.environ.setdefault("LOG_FILE_PATH", "logs/apps.log")
     os.environ.setdefault("ENABLE_CONSOLE_LOGGING", "True")
     os.environ.setdefault("ENABLE_FILE_LOGGING", "True")
 
