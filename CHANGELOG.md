@@ -1,3 +1,9 @@
+## v0.3.10 (2025-02-18)
+
+### Fix
+
+- bug fixes in parse_docs.py
+
 ## v0.3.9 (2025-02-09)
 
 ### Fix
