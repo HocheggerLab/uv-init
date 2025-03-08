@@ -66,8 +66,12 @@ def _copy_template(template: str, project_dir: Path) -> None:
 
 def _update_configs(project_dir: Path, args: Namespace) -> None:
     """Update the configuration files with project information."""
+    module_name = args.project_name.replace("-", "_")
+    src_dir = project_dir / "src" / module_name
     for template in ["README.md", "LICENSE", "pyproject.toml"]:
         _update_content(project_dir, args, template)
+    # Update config.py in the src directory
+    _update_content(src_dir, args, "config.py")
 
 
 def _parse_replacement(args: Namespace, content_path: Path) -> dict[str, str]:
