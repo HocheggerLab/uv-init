@@ -9,8 +9,7 @@ Returns:
 
 import argparse
 import sys
-from typing import NoReturn, Optional
-from typing.protocols import SupportsWrite
+from typing import IO, NoReturn, Optional
 
 from rich import print as rprint
 from rich.panel import Panel
@@ -62,9 +61,12 @@ class RichArgumentParser(argparse.ArgumentParser):
 
         return str(help_text)
 
-    def print_help(self, file: Optional[SupportsWrite[str]] = None) -> None:
+    def print_help(self, file: Optional[IO[str]] = None) -> None:  # type: ignore[override]
         help_text = self.format_help()
-        rprint(Panel(help_text, title="UV Init Help", border_style="cyan"))
+        rprint(
+            Panel(help_text, title="UV Init Help", border_style="cyan"),
+            file=file,
+        )
 
     def error(self, message: str) -> NoReturn:
         error_message = Text()
