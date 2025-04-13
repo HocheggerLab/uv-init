@@ -3,6 +3,7 @@ from argparse import Namespace
 from pathlib import Path
 
 import pytest
+
 from uv_init.parse_docs import (
     _copy_template,
     _parse_replacement,
@@ -123,6 +124,6 @@ def test_python_version_matrix():
         replacements = _parse_replacement(args, Path("/fake/path"))
 
         actual_matrix = replacements['python-version: ["3.12"]']
-        assert (
-            actual_matrix == expected
-        ), f"For Python {python_version}, expected {expected} but got {actual_matrix}"
+        assert actual_matrix == expected, (
+            f"For Python {python_version}, expected {expected} but got {actual_matrix}"
+        )

@@ -4,6 +4,7 @@ from argparse import Namespace
 from unittest.mock import patch
 
 import pytest
+
 from uv_init.__main__ import initialize_uv_project
 
 
@@ -46,42 +47,42 @@ def test_basic_lib_project(temp_project_dir):
     initialize_uv_project(args)
 
     # Verify basic project structure
-    assert (
-        project_path / "src" / "test_lib"
-    ).exists(), "Source directory not created"
-    assert (
-        project_path / "pyproject.toml"
-    ).exists(), "pyproject.toml not created"
+    assert (project_path / "src" / "test_lib").exists(), (
+        "Source directory not created"
+    )
+    assert (project_path / "pyproject.toml").exists(), (
+        "pyproject.toml not created"
+    )
     assert (project_path / "tests").exists(), "Tests directory not created"
     assert (project_path / "README.md").exists(), "README.md not created"
     assert (project_path / ".gitignore").exists(), ".gitignore not created"
     assert (project_path / "LICENSE").exists(), "LICENSE file not created"
-    assert (
-        project_path / ".pre-commit-config.yaml"
-    ).exists(), "Pre-commit config not created"
+    assert (project_path / ".pre-commit-config.yaml").exists(), (
+        "Pre-commit config not created"
+    )
 
     # Verify lib-specific content
     pyproject_content = (project_path / "pyproject.toml").read_text()
-    assert (
-        'name = "test-lib"' in pyproject_content
-    ), "Project name not correctly set in pyproject.toml"
-    assert (
-        'python = ">=3.12"' in pyproject_content
-    ), "Python version not correctly set in pyproject.toml"
+    assert 'name = "test-lib"' in pyproject_content, (
+        "Project name not correctly set in pyproject.toml"
+    )
+    assert 'python = ">=3.12"' in pyproject_content, (
+        "Python version not correctly set in pyproject.toml"
+    )
 
     # Verify dev dependencies configuration
-    assert (
-        "[tool.ruff]" in pyproject_content
-    ), "Ruff configuration missing in pyproject.toml"
-    assert (
-        "[tool.pytest.ini_options]" in pyproject_content
-    ), "Pytest configuration missing in pyproject.toml"
-    assert (
-        "[tool.mypy]" in pyproject_content
-    ), "Mypy configuration missing in pyproject.toml"
-    assert (
-        "[tool.commitizen]" in pyproject_content
-    ), "Commitizen configuration missing in pyproject.toml"
+    assert "[tool.ruff]" in pyproject_content, (
+        "Ruff configuration missing in pyproject.toml"
+    )
+    assert "[tool.pytest.ini_options]" in pyproject_content, (
+        "Pytest configuration missing in pyproject.toml"
+    )
+    assert "[tool.mypy]" in pyproject_content, (
+        "Mypy configuration missing in pyproject.toml"
+    )
+    assert "[tool.commitizen]" in pyproject_content, (
+        "Commitizen configuration missing in pyproject.toml"
+    )
 
     # Verify version file
     init_content = (
@@ -94,9 +95,9 @@ def test_basic_lib_project(temp_project_dir):
 
     # Verify README content
     readme_content = (project_path / "README.md").read_text()
-    assert (
-        "Python 3.12" in readme_content
-    ), "Python version not found in README"
+    assert "Python 3.12" in readme_content, (
+        "Python version not found in README"
+    )
     assert "test-lib" in readme_content, "Project name not found in README"
 
 
@@ -116,42 +117,42 @@ def test_basic_app_project(temp_project_dir):
     initialize_uv_project(args)
 
     # Verify app project structure
-    assert (
-        project_path / "src" / "test_app"
-    ).exists(), "Source directory not created"
-    assert (
-        project_path / "pyproject.toml"
-    ).exists(), "pyproject.toml not created"
+    assert (project_path / "src" / "test_app").exists(), (
+        "Source directory not created"
+    )
+    assert (project_path / "pyproject.toml").exists(), (
+        "pyproject.toml not created"
+    )
     assert (project_path / "tests").exists(), "Tests directory not created"
     assert (project_path / "README.md").exists(), "README.md not created"
     assert (project_path / ".gitignore").exists(), ".gitignore not created"
     assert (project_path / "LICENSE").exists(), "LICENSE file not created"
-    assert (
-        project_path / ".pre-commit-config.yaml"
-    ).exists(), "Pre-commit config not created"
+    assert (project_path / ".pre-commit-config.yaml").exists(), (
+        "Pre-commit config not created"
+    )
 
     # Verify app-specific content
     pyproject_content = (project_path / "pyproject.toml").read_text()
-    assert (
-        'name = "test-app"' in pyproject_content
-    ), "Project name not correctly set in pyproject.toml"
-    assert (
-        'python = ">=3.12"' in pyproject_content
-    ), "Python version not correctly set in pyproject.toml"
+    assert 'name = "test-app"' in pyproject_content, (
+        "Project name not correctly set in pyproject.toml"
+    )
+    assert 'python = ">=3.12"' in pyproject_content, (
+        "Python version not correctly set in pyproject.toml"
+    )
 
     # Verify dev dependencies configuration
-    assert (
-        "[tool.ruff]" in pyproject_content
-    ), "Ruff configuration missing in pyproject.toml"
-    assert (
-        "[tool.pytest.ini_options]" in pyproject_content
-    ), "Pytest configuration missing in pyproject.toml"
-    assert (
-        "[tool.mypy]" in pyproject_content
-    ), "Mypy configuration missing in pyproject.toml"
-    assert (
-        "[tool.commitizen]" in pyproject_content
-    ), "Commitizen configuration missing in pyproject.toml"
+    assert "[tool.ruff]" in pyproject_content, (
+        "Ruff configuration missing in pyproject.toml"
+    )
+    assert "[tool.pytest.ini_options]" in pyproject_content, (
+        "Pytest configuration missing in pyproject.toml"
+    )
+    assert "[tool.mypy]" in pyproject_content, (
+        "Mypy configuration missing in pyproject.toml"
+    )
+    assert "[tool.commitizen]" in pyproject_content, (
+        "Commitizen configuration missing in pyproject.toml"
+    )
 
     # Verify version file
     init_content = (
@@ -182,50 +183,50 @@ def test_workspace_project(temp_project_dir):
         initialize_uv_project(args)
 
     # Verify workspace structure
-    assert (
-        project_path / "packages"
-    ).exists(), "Packages directory not created"
-    assert (
-        project_path / "pyproject.toml"
-    ).exists(), "pyproject.toml not created"
+    assert (project_path / "packages").exists(), (
+        "Packages directory not created"
+    )
+    assert (project_path / "pyproject.toml").exists(), (
+        "pyproject.toml not created"
+    )
     assert (project_path / "README.md").exists(), "README.md not created"
     assert (project_path / ".gitignore").exists(), ".gitignore not created"
     assert (project_path / "LICENSE").exists(), "LICENSE file not created"
-    assert (
-        project_path / ".pre-commit-config.yaml"
-    ).exists(), "Pre-commit config not created"
+    assert (project_path / ".pre-commit-config.yaml").exists(), (
+        "Pre-commit config not created"
+    )
 
     # Verify workspace-specific content
     pyproject_content = (project_path / "pyproject.toml").read_text()
-    assert (
-        'name = "test-workspace"' in pyproject_content
-    ), "Project name not correctly set in pyproject.toml"
-    assert (
-        "[tool.uv.workspace]" in pyproject_content
-    ), "Workspace configuration missing in pyproject.toml"
-    assert (
-        "[tool.uv.sources]" in pyproject_content
-    ), "Sources configuration missing in pyproject.toml"
+    assert 'name = "test-workspace"' in pyproject_content, (
+        "Project name not correctly set in pyproject.toml"
+    )
+    assert "[tool.uv.workspace]" in pyproject_content, (
+        "Workspace configuration missing in pyproject.toml"
+    )
+    assert "[tool.uv.sources]" in pyproject_content, (
+        "Sources configuration missing in pyproject.toml"
+    )
 
     # Verify dev dependencies configuration
-    assert (
-        "[tool.ruff]" in pyproject_content
-    ), "Ruff configuration missing in pyproject.toml"
-    assert (
-        "[tool.pytest.ini_options]" in pyproject_content
-    ), "Pytest configuration missing in pyproject.toml"
-    assert (
-        "[tool.mypy]" in pyproject_content
-    ), "Mypy configuration missing in pyproject.toml"
-    assert (
-        "[tool.commitizen]" in pyproject_content
-    ), "Commitizen configuration missing in pyproject.toml"
+    assert "[tool.ruff]" in pyproject_content, (
+        "Ruff configuration missing in pyproject.toml"
+    )
+    assert "[tool.pytest.ini_options]" in pyproject_content, (
+        "Pytest configuration missing in pyproject.toml"
+    )
+    assert "[tool.mypy]" in pyproject_content, (
+        "Mypy configuration missing in pyproject.toml"
+    )
+    assert "[tool.commitizen]" in pyproject_content, (
+        "Commitizen configuration missing in pyproject.toml"
+    )
 
     # Verify README content
     readme_content = (project_path / "README.md").read_text()
-    assert (
-        "test-workspace" in readme_content
-    ), "Project name not found in README"
+    assert "test-workspace" in readme_content, (
+        "Project name not found in README"
+    )
 
 
 def test_project_with_different_python(temp_project_dir):
