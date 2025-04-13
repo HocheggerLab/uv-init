@@ -2,6 +2,7 @@ from argparse import ArgumentTypeError
 from unittest.mock import patch
 
 import pytest
+
 from uv_init.cli import parse_args, validate_project_name
 
 
@@ -30,7 +31,7 @@ def test_parse_args_defaults(capsys):
         args = parse_args()
         assert args.project_name == "my-project"
         assert args.type == "lib"  # Default type should be lib
-        assert args.python == "3.12"
+        assert args.python == "3.13"
         assert args.workspace is False
 
 
