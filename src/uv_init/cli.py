@@ -9,7 +9,8 @@ Returns:
 
 import argparse
 import sys
-from typing import IO, NoReturn, Optional
+from typing import NoReturn, Optional
+from typing.protocols import SupportsWrite
 
 from rich import print as rprint
 from rich.panel import Panel
@@ -61,7 +62,7 @@ class RichArgumentParser(argparse.ArgumentParser):
 
         return str(help_text)
 
-    def print_help(self, file: Optional[IO[str]] = None) -> None:
+    def print_help(self, file: Optional[SupportsWrite[str]] = None) -> None:
         help_text = self.format_help()
         rprint(Panel(help_text, title="UV Init Help", border_style="cyan"))
 
@@ -109,7 +110,7 @@ def parse_args() -> argparse.Namespace:
         "-p",
         "--python",
         help="The python version to use",
-        default="3.12",
+        default="3.13",
         choices=["3.13", "3.12", "3.11", "3.10"],
     )
 

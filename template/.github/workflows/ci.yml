@@ -9,9 +9,15 @@ on:
 jobs:
   quality:
     runs-on: ubuntu-latest
+    env:
+      ENV: "test"
+      LOG_LEVEL: "DEBUG"
+      LOG_FORMAT: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+      ENABLE_CONSOLE_LOGGING: "true"
+      ENABLE_FILE_LOGGING: "false"
     strategy:
       matrix:
-        python-version: ["3.12"]
+        python-version: ["3.13"]
 
     steps:
     - uses: actions/checkout@v4
