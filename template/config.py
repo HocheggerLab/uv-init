@@ -34,7 +34,7 @@ def set_env_vars() -> None:
     # Fall back to default .env file
     default_env_path = project_root / ".env"
     if default_env_path.exists():
-        load_dotenv(default_env_path)
+        load_dotenv(default_env_path, override=True)
         return
 
     # If no files found, check for required environment variables
