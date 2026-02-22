@@ -252,3 +252,34 @@ additional --private flag for optional private repos
 3. Commit your changes using conventional commits (`cz commit`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+
+---
+
+## Development
+
+### Local environment
+
+```bash
+uv sync
+```
+
+### Tests
+
+```bash
+uv run pytest
+```
+
+### Type checking (Ty)
+
+```bash
+uv run ty check .
+```
+
+### Building the documentation (Sphinx)
+
+```bash
+uv run sphinx-build -b html docs docs/_build/html
+```
+
+Then open `docs/_build/html/index.html` in your browser.
+
