@@ -5,76 +5,53 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-# Define project_root at module level
-project_root = Path(__file__).parent.parent.parent.resolve()
+# Project root of the generated app (two levels up from this config module)
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
 def set_env_vars() -> None:
-    """
-    Load environment variables from configuration files.
-    If ENV is not set, defaults to 'development'.
-    Tries to load from .env.{ENV} first, then falls back to .env if needed.
-    If no files are found, checks for required environment variables.
+    """Load environment variables for logging with sensible defaults.
 
-    Raises:
-        OSError: If no configuration exists in files or environment.
-    """
-    # Determine the project root (adjust as necessary)
-    project_root = Path(__file__).parent.parent.parent.resolve()
+    The configuration strategy is:
 
-    # Get environment, defaulting to development
+    1. Start with hard-coded defaults suitable for development.
+    2. Load a base ``.env`` file if present.
+    3. Load an environment-specific ``.env.<ENV>`` file (if present),
+       overriding previous values.
+
+    This matches the behaviour described in ``logging-setup.md`` and
+    avoids hard failures when configuration files are missing.  It also
+    keeps the API simple: calling :func:`set_env_vars` is always safe.
+    """
+
+    # Default environment and config files
     env = os.getenv("ENV", "development").lower()
 
-    # Try environment-specific file first
-    env_specific_path = project_root / f".env.{env}"
+    base_env_path = PROJECT_ROOT / ".env"
+    env_specific_path = PROJECT_ROOT / f".env.{env}"
+
+    # 1) Load base .env (if it exists)
+    if base_env_path.exists():
+        load_dotenv(base_env_path)
+
+    # 2) Load environment-specific overrides (if they exist)
     if env_specific_path.exists():
-        load_dotenv(env_specific_path)
-        return
+        load_dotenv(env_specific_path, override=True)
 
-    # Fall back to default .env file
-    default_env_path = project_root / ".env"
-    if default_env_path.exists():
-        load_dotenv(default_env_path, override=True)
-        return
+    # 3) Ensure sane defaults for logging-related variables
+    defaults: dict[str, str] = {
+        "ENV": env,
+        "LOG_LEVEL": "INFO",
+        "LOG_FORMAT": "% (asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s",
+        "ENABLE_CONSOLE_LOGGING": "True",
+        "ENABLE_FILE_LOGGING": "True",
+        "LOG_FILE_PATH": "logs/app.log",
+        "LOG_MAX_BYTES": "1048576",  # 1 MB
+        "LOG_BACKUP_COUNT": "5",
+    }
 
-    # If no files found, check for required environment variables
-    required_vars = [
-        "ENV",
-        "LOG_LEVEL",
-        "LOG_FORMAT",
-        "ENABLE_CONSOLE_LOGGING",
-        "ENABLE_FILE_LOGGING",
-    ]
-
-    if all(os.getenv(var) is not None for var in required_vars):
-        # All required variables are present in environment
-        return
-
-    # If we get here, no configuration was found
-    error_msg = "\n".join(
-        [
-            "No configuration found!",
-            f"Current environment: {env}",
-            "Tried looking for:",
-            f"  - {env_specific_path}",
-            f"  - {default_env_path}",
-            "And checked environment variables for:",
-            f"  - {', '.join(required_vars)}",
-            "\nPlease create either a .env.{ENV} file, .env file, or set all required environment variables.",
-        ]
-    )
-    raise OSError(error_msg)
-
-
-def validate_env_vars() -> None:
-    """
-    Validate that all required environment variables are set.
-    """
-    required_vars = ["LOG_LEVEL", "LOG_FILE_PATH"]
-    if missing_vars := [var for var in required_vars if not os.getenv(var)]:
-        raise OSError(
-            f"Missing required environment variables: {', '.join(missing_vars)}"
-        )
+    for key, value in defaults.items():
+        os.environ.setdefault(key, value)
 
 
 def configure_log_handler(
@@ -86,94 +63,97 @@ def configure_log_handler(
     """Configure a logging handler with the specified settings.
 
     Args:
-        handler: The logging handler to configure
-        log_level: The logging level to set
-        formatter: The formatter to use for log messages
-        logger: The logger to add the handler to
+        handler: The logging handler to configure.
+        log_level: The logging level to set.
+        formatter: The formatter to use for log messages.
+        logger: The logger to add the handler to.
     """
+
     handler.setLevel(getattr(logging, log_level, logging.DEBUG))
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
 
 def get_logger(name: str) -> logging.Logger:
-    """
-    Get a logger with the given name, ensuring it's properly configured.
-    If this is the first call, it will set up the root logger configuration.
-    Subsequent calls will return appropriately named loggers that inherit the configuration.
+    """Return a configured logger for the given module name.
 
-    Args:
-        name: The logger name, typically __name__ from the calling module
+    The first call configures the root logger based on environment
+    variables (typically set via :func:`set_env_vars`).  Subsequent
+    calls return child loggers that inherit this configuration.
 
-    Returns:
-        logging.Logger: A configured logger instance
+    ``name`` should normally be ``__name__`` from the calling module.
+    When ``__main__`` is passed, this function attempts to resolve the
+    proper module path relative to ``PROJECT_ROOT / "src"`` so that
+    log records have stable, import-style names.
     """
-    # Handle the case when module is run directly (__main__)
+
+    # Handle the case when a module is run directly (``__main__``)
     if name == "__main__":
-        # Get the caller's file path
         import inspect
 
         frame = inspect.stack()[1]
         module_path = Path(frame.filename)
         try:
-            # Get relative path from project root to the module
-            rel_path = module_path.relative_to(project_root / "src")
-            # Convert path to module notation (my_app.submodule.file)
+            # Get relative path from project root's ``src`` directory
+            rel_path = module_path.relative_to(PROJECT_ROOT / "src")
+            # Convert path to module notation (``my_app.submodule.file``)
             module_name = str(rel_path.with_suffix("")).replace(os.sep, ".")
             name = module_name
         except ValueError:
-            # Fallback if file is not in src directory
+            # Fallback if file is not in ``src`` directory
             name = module_path.stem
 
     # Get or create the logger
     logger = logging.getLogger(name)
 
-    # If the root logger isn't configured yet, configure it
+    # If the root logger isn't configured yet, configure it once
     root_logger = logging.getLogger()
     if not root_logger.handlers:
-        validate_env_vars()
+        # Make sure we have at least default environment variables
+        set_env_vars()
 
-        # Retrieve logging configurations from environment variables
-        LOG_LEVEL = os.getenv("LOG_LEVEL", "WARNING").upper()
+        # Retrieve logging configuration from environment variables
+        LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
         LOG_FORMAT = os.getenv(
             "LOG_FORMAT",
             "%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s",
         )
         ENABLE_CONSOLE_LOGGING = os.getenv(
-            "ENABLE_CONSOLE_LOGGING", "False"
-        ).lower() in ["true", "1", "yes"]
+            "ENABLE_CONSOLE_LOGGING", "True"
+        ).lower() in {"true", "1", "yes"}
         ENABLE_FILE_LOGGING = os.getenv(
-            "ENABLE_FILE_LOGGING", "False"
-        ).lower() in ["true", "1", "yes"]
+            "ENABLE_FILE_LOGGING", "True"
+        ).lower() in {"true", "1", "yes"}
         LOG_FILE_PATH = os.getenv("LOG_FILE_PATH", "logs/app.log")
-        LOG_MAX_BYTES = int(os.getenv("LOG_MAX_BYTES", 1048576))  # 1MB default
-        LOG_BACKUP_COUNT = int(os.getenv("LOG_BACKUP_COUNT", 5))
+        LOG_MAX_BYTES = int(os.getenv("LOG_MAX_BYTES", "1048576"))
+        LOG_BACKUP_COUNT = int(os.getenv("LOG_BACKUP_COUNT", "5"))
 
         # Configure the root logger
         root_logger.setLevel(getattr(logging, LOG_LEVEL, logging.DEBUG))
+        root_logger.propagate = False  # Do not leak to the global root
 
-        # Prevent propagation beyond our root logger
-        root_logger.propagate = False
-
-        # Formatter
         formatter = logging.Formatter(LOG_FORMAT)
 
-        # Console Handler
+        # Console handler
         if ENABLE_CONSOLE_LOGGING:
-            ch = logging.StreamHandler()
-            configure_log_handler(ch, LOG_LEVEL, formatter, root_logger)
+            console_handler = logging.StreamHandler()
+            configure_log_handler(
+                console_handler, LOG_LEVEL, formatter, root_logger
+            )
 
-        # File Handler
+        # File handler (with rotation)
         if ENABLE_FILE_LOGGING:
             log_path = Path(LOG_FILE_PATH)
             if log_dir := log_path.parent:
                 log_dir.mkdir(parents=True, exist_ok=True)
 
-            fh = RotatingFileHandler(
+            file_handler = RotatingFileHandler(
                 LOG_FILE_PATH,
                 maxBytes=LOG_MAX_BYTES,
                 backupCount=LOG_BACKUP_COUNT,
             )
-            configure_log_handler(fh, LOG_LEVEL, formatter, root_logger)
+            configure_log_handler(
+                file_handler, LOG_LEVEL, formatter, root_logger
+            )
 
     return logger
