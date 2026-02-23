@@ -2,10 +2,6 @@
   // ✅ Enable Pylance for fast type checking
   "python.analysis.enablePylance": true,
   "python.analysis.typeCheckingMode": "basic",
-  "python.analysis.disableMypy": true,
-  "mypy.enabled": false,
-  "mypy.dmypy": false,
-  "mypy.runUsingActiveInterpreter": false,
 
   // ✅ Enable Pylance auto-import suggestions
   "python.analysis.autoImportCompletions": true,
@@ -33,7 +29,7 @@
     "**/.git/objects/**": true,
     "**/.git/subtree-cache/**": true,
     "**/node_modules/**": true,
-    "**/.mypy_cache/**": true,
+    "**/.ty_cache/**": true,
     "**/.ruff_cache/**": true,
     "**/__pycache__/**": true
   },
@@ -46,7 +42,7 @@
 
   // ✅ Improve workspace search by excluding non-code directories
   "search.exclude": {
-    "**/.mypy_cache": true,
+    "**/.ty_cache": true,
     "**/.ruff_cache": true,
     "**/node_modules": true,
     "**/__pycache__": true,

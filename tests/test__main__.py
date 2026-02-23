@@ -77,8 +77,8 @@ def test_basic_lib_project(temp_project_dir):
     assert "[tool.pytest.ini_options]" in pyproject_content, (
         "Pytest configuration missing in pyproject.toml"
     )
-    assert "[tool.mypy]" in pyproject_content, (
-        "Mypy configuration missing in pyproject.toml"
+    assert "[tool.ty]" in pyproject_content, (
+        "Ty configuration missing in pyproject.toml"
     )
     assert "[tool.commitizen]" in pyproject_content, (
         "Commitizen configuration missing in pyproject.toml"
@@ -147,8 +147,8 @@ def test_basic_app_project(temp_project_dir):
     assert "[tool.pytest.ini_options]" in pyproject_content, (
         "Pytest configuration missing in pyproject.toml"
     )
-    assert "[tool.mypy]" in pyproject_content, (
-        "Mypy configuration missing in pyproject.toml"
+    assert "[tool.ty]" in pyproject_content, (
+        "Ty configuration missing in pyproject.toml"
     )
     assert "[tool.commitizen]" in pyproject_content, (
         "Commitizen configuration missing in pyproject.toml"
@@ -215,8 +215,8 @@ def test_workspace_project(temp_project_dir):
     assert "[tool.pytest.ini_options]" in pyproject_content, (
         "Pytest configuration missing in pyproject.toml"
     )
-    assert "[tool.mypy]" in pyproject_content, (
-        "Mypy configuration missing in pyproject.toml"
+    assert "[tool.ty]" in pyproject_content, (
+        "Ty configuration missing in pyproject.toml"
     )
     assert "[tool.commitizen]" in pyproject_content, (
         "Commitizen configuration missing in pyproject.toml"

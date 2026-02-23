@@ -22,7 +22,6 @@ repos:
         - id: check-yaml
           args: [--allow-multiple-documents, --unsafe]  # Add --unsafe to allow duplicate keys
         - id: check-toml
-          exclude: ^template/mypy-config\.toml$
         - id: check-added-large-files
         - id: debug-statements
         - id: check-case-conflict

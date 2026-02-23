@@ -57,7 +57,7 @@ This project is licensed under the MIT License
 - Workspace support for monorepo setups
 - Automatic setup of development tools:
   - Ruff for linting and formatting
-  - MyPy for type checking
+  - Ty for type checking
   - Pytest for testing
   - Commitizen for conventional commits
   - Pre-commit hooks
@@ -83,7 +83,7 @@ GITHUB_TOKEN='insert github token'
 
 ## Usage
 
-Basic usage to install a repo with pre-configured Ruff, Mypy, Commitizen and Pre-Commit Hooks settings, optional setup of github repo and basic CI pipeline including version bumps on conventional commit messages.
+Basic usage to install a repo with pre-configured Ruff, Ty, Commitizen and Pre-Commit Hooks settings, optional setup of github repo and basic CI pipeline including version bumps on conventional commit messages.
 
 To run the program cd to desired parent directory (this should not be a git repo!)
 The set the UV_ORIGINAL_CWD to $PWD and then execute uv run.
@@ -174,7 +174,7 @@ workspace_name/
 UV Init sets up the following development tools:
 
 - **Ruff**: Modern Python linter and formatter
-- **MyPy**: Static type checker
+- **Ty**: Static type checker
 - **Pytest**: Testing framework
 - **Commitizen**: Conventional commit tooling
 - **Pre-commit**: Git hooks manager
@@ -191,10 +191,10 @@ UV Init sets up the following development tools:
 - Selected rules: flake8, pyupgrade, isort, and more
 - Automatic fixes enabled
 
-#### MyPy
-- Strict mode enabled
-- Configured for Python 3.12+
-- Excludes tests and build directories
+#### Ty
+- Checks `src` and `tests`
+- Sets rule severity to errors for strict enforcement
+- Excludes virtualenv/build/dist/migrations paths
 
 #### Commitizen
 - Uses conventional commits
@@ -235,7 +235,7 @@ additional --private flag for optional private repos
 - Runs on Python 3.13
 - Performs:
   - Code linting with Ruff
-  - Type checking with MyPy
+  - Type checking with Ty
   - Unit tests with Pytest
   - Format checking
 

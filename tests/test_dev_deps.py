@@ -30,7 +30,7 @@ def test_add_dev_dependencies_success():
                 "--dev",
                 "ruff",
                 "pytest",
-                "mypy",
+                "ty",
                 "commitizen",
                 "pre-commit",
             ],
