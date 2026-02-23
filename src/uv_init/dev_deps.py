@@ -21,7 +21,7 @@ def add_dev_dependencies(project_name: str, project_path: Path) -> None:
                 "--dev",
                 "ruff",
                 "pytest",
-                "mypy",
+                "ty",
                 "commitizen",
                 "pre-commit",
             ],
@@ -63,7 +63,7 @@ def parse_dev_configs(project_path: Path) -> None:
     """Parse dev configs from the project directory"""
     config_dir = Path.cwd() / "template"
     config_files = [
-        config_dir / "mypy-config.toml",
+        config_dir / "ty-config.toml",
         config_dir / "ruff-config.toml",
         config_dir / "pytest-config.toml",
         config_dir / "commitizen-config.toml",
