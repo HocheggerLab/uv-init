@@ -9,7 +9,7 @@ Returns:
 
 import argparse
 import sys
-from typing import IO, NoReturn, Optional
+from typing import IO, NoReturn
 
 from rich import print as rprint
 from rich.panel import Panel
@@ -61,7 +61,7 @@ class RichArgumentParser(argparse.ArgumentParser):
 
         return str(help_text)
 
-    def print_help(self, file: Optional[IO[str]] = None) -> None:  # type: ignore[override]
+    def print_help(self, file: IO[str] | None = None) -> None:  # type: ignore[override]
         help_text = self.format_help()
         rprint(
             Panel(help_text, title="UV Init Help", border_style="cyan"),

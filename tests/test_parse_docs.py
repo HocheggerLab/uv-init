@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 
+from uv_init.exceptions import TemplateError
 from uv_init.parse_docs import (
     _copy_template,
     _parse_replacement,
@@ -56,7 +57,7 @@ def test_copy_template_file_not_found(temp_project_structure):
     """Test handling of missing template file."""
     project_dir, _ = temp_project_structure
 
-    with pytest.raises(SystemExit):
+    with pytest.raises(TemplateError):
         _copy_template("nonexistent.txt", project_dir)
 
 

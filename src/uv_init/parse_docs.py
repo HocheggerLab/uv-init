@@ -10,7 +10,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from rich import print as rprint
-from rich.panel import Panel
+
+from uv_init.exceptions import TemplateError
 
 
 def parse_docs(args: Namespace, project_dir: Path) -> None:
@@ -53,15 +54,8 @@ def _copy_template(template: str, project_dir: Path) -> None:
                 if package.is_dir():
                     shutil.copy(copy_path, package)
             rprint(f"[green]{template} successfully copied[/green]")
-    except FileNotFoundError:
-        rprint(
-            Panel.fit(
-                f"[red]{template} not found[/red]",
-                title=f"{template} Template Not Found",
-                border_style="red",
-            )
-        )
-        exit(1)
+    except FileNotFoundError as e:
+        raise TemplateError(f"{template} template not found") from e
 
 
 def _update_configs(project_dir: Path, args: Namespace) -> None:
@@ -128,14 +122,7 @@ def _update_content(
                 f.write(content)
         rprint(f"[green]{content_type} successfully updated[/green]")
     except FileNotFoundError as e:
-        rprint(
-            Panel.fit(
-                f"[red]Error:[/red] Failed to update {content_type}\n{e}",
-                title=f"{content_type} not updated",
-                border_style="red",
-            )
-        )
-        exit(1)
+        raise TemplateError(f"Failed to update {content_type}: {e}") from e
 
 
 def _init_version(args: Namespace, project_dir: Path) -> None:
@@ -168,15 +155,8 @@ def _init_version(args: Namespace, project_dir: Path) -> None:
                         f"[green]Version file initialized for {sub_package_name}[/green]"
                     )
 
-    except FileNotFoundError:
-        rprint(
-            Panel.fit(
-                "[red]Version file not found[/red]",
-                title="Version File Not Found",
-                border_style="red",
-            )
-        )
-        exit(1)
+    except FileNotFoundError as e:
+        raise TemplateError("Version file not found") from e
 
 
 def _add_github_workflows(project_dir: Path) -> None:
@@ -198,10 +178,4 @@ def _add_github_workflows(project_dir: Path) -> None:
             "[green]GitHub workflow configurations added successfully[/green]"
         )
     except FileNotFoundError as e:
-        rprint(
-            Panel.fit(
-                f"[red]Error:[/red] Failed to add GitHub workflows\n{e}",
-                title="GitHub Workflows Not Added",
-                border_style="red",
-            )
-        )
+        raise TemplateError(f"Failed to add GitHub workflows: {e}") from e

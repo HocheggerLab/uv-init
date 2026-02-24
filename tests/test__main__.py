@@ -6,6 +6,7 @@ from unittest.mock import patch
 import pytest
 
 from uv_init.__main__ import initialize_uv_project
+from uv_init.exceptions import DependencyError, GitSetupError
 
 
 @pytest.fixture
@@ -247,3 +248,61 @@ def test_project_with_different_python(temp_project_dir):
     # Verify Python version in configs
     pyproject_content = (project_path / "pyproject.toml").read_text()
     assert 'python = ">=3.11"' in pyproject_content
+
+
+def test_rollback_on_phase1_failure(temp_project_dir):
+    """Test that project directory is removed when Phase 1 fails."""
+    project_name = "test-rollback"
+    project_path = temp_project_dir / project_name
+
+    args = Namespace(
+        project_name=project_name,
+        type="lib",
+        python="3.12",
+        workspace=False,
+        github=False,
+    )
+
+    with patch(
+        "uv_init.__main__.add_dev_dependencies",
+        side_effect=DependencyError("mock dep failure"),
+    ):
+        with pytest.raises(SystemExit) as exc_info:
+            initialize_uv_project(args)
+
+        assert exc_info.value.code == 1
+
+    # Project directory should have been cleaned up
+    assert not project_path.exists(), (
+        "Project directory should be removed after rollback"
+    )
+
+
+def test_github_failure_keeps_project(temp_project_dir):
+    """Test that GitHub failure warns but keeps the local project."""
+    project_name = "test-gh-fail"
+    project_path = temp_project_dir / project_name
+
+    args = Namespace(
+        project_name=project_name,
+        type="lib",
+        python="3.12",
+        workspace=False,
+        github=True,
+        private=False,
+    )
+
+    with patch(
+        "uv_init.__main__.setup_git_repo",
+        side_effect=GitSetupError("mock gh failure"),
+    ):
+        # Should NOT raise — just warn
+        initialize_uv_project(args)
+
+    # Project should still exist
+    assert project_path.exists(), (
+        "Project directory should be kept after GitHub failure"
+    )
+    assert (project_path / "pyproject.toml").exists(), (
+        "pyproject.toml should exist after GitHub failure"
+    )

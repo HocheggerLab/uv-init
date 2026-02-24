@@ -4,6 +4,8 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
+
+from uv_init.exceptions import ProjectCreationError
 from uv_init.router import CommandDispatcher
 
 
@@ -109,5 +111,5 @@ def test_subprocess_error(mock_subprocess, base_args, temp_cwd, mock_fs):
     mock_subprocess.side_effect = error
 
     dispatcher = CommandDispatcher(args, temp_cwd)
-    with pytest.raises(SystemExit):
+    with pytest.raises(ProjectCreationError):
         dispatcher.dispatch()

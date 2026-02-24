@@ -1,12 +1,12 @@
 import subprocess
-import sys
 from argparse import Namespace
 from dataclasses import dataclass
 from pathlib import Path
 
 from rich import print as rprint
-from rich.panel import Panel
 from rich.prompt import Prompt
+
+from uv_init.exceptions import ProjectCreationError
 
 
 @dataclass
@@ -21,16 +21,11 @@ class CommandDispatcher:
 
     def check_dir_exists(self) -> None:
         if self.project_path.exists():
-            rprint(
-                Panel.fit(
-                    f"[red]Error:[/red] Cannot create project '[bold]{self.args.project_name}[/bold]'\n"
-                    f"Directory already exists at: [blue]{self.original_cwd}[/blue]\n\n"
-                    "Try using a different project name or remove the existing directory.",
-                    title="Project Creation Failed",
-                    border_style="red",
-                )
+            raise ProjectCreationError(
+                f"Cannot create project '{self.args.project_name}'\n"
+                f"Directory already exists at: {self.original_cwd}\n\n"
+                "Try using a different project name or remove the existing directory."
             )
-            sys.exit(1)
 
     def dispatch(self) -> None:
         """Route to appropriate command handler based on argument pattern"""
@@ -86,14 +81,9 @@ class CommandDispatcher:
                 self._initialize_workspace()
 
         except subprocess.CalledProcessError as e:
-            rprint(
-                Panel.fit(
-                    f"[red]Error:[/red] Failed to create {project_type} project\n{e}",
-                    title="Project Creation Failed",
-                    border_style="red",
-                )
-            )
-            sys.exit(1)
+            raise ProjectCreationError(
+                f"Failed to create {project_type} project: {e}"
+            ) from e
 
     def _initialize_workspace(self) -> None:
         """Initialize workspace configuration after project creation"""
@@ -143,14 +133,9 @@ class CommandDispatcher:
             )
             rprint("[green]✓[/green] Successfully added common_utils'")
         except subprocess.CalledProcessError as e:
-            rprint(
-                Panel.fit(
-                    f"[red]Error:[/red] Failed to create common_utils\n{e}",
-                    title="Common Utils Creation Failed",
-                    border_style="red",
-                )
-            )
-            sys.exit(1)
+            raise ProjectCreationError(
+                f"Failed to create common_utils: {e}"
+            ) from e
 
     def _add_other_projects(self, project_name: str) -> None:
         """Add other projects to the workspace"""
@@ -178,11 +163,6 @@ class CommandDispatcher:
             )
             rprint(f"[green]✓[/green] Successfully created {project_name}")
         except subprocess.CalledProcessError as e:
-            rprint(
-                Panel.fit(
-                    f"[red]Error:[/red] Failed to create  {project_name}\n{e}",
-                    title="Common Utils Creation Failed",
-                    border_style="red",
-                )
-            )
-            sys.exit(1)
+            raise ProjectCreationError(
+                f"Failed to create {project_name}: {e}"
+            ) from e
