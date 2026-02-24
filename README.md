@@ -34,7 +34,7 @@ Helfrid Hochegger
 ## Dependencies
 - Requires Python 3.13 (not tested on other versions)
 - UV package manager installed (https://github.com/astral-sh/uv)
-- GitHub account and personal access token (if using GitHub features)
+- GitHub CLI (`gh`) authenticated via `gh auth login` (if using GitHub features)
 
 ---
 
@@ -75,10 +75,11 @@ pip install, uv pip install, or uv add.
 
 Requires a .env file in the project’s root directory with the following values:
 ```env
-AUTHOR_NAME='John Doe'
-AUTHOR_EMAIL='johndoe@email.com'
-GITHUB_TOKEN='insert github token'
+AUTHOR_NAME=’John Doe’
+AUTHOR_EMAIL=’johndoe@email.com’
 ```
+
+GitHub authentication is handled by the `gh` CLI. Run `gh auth login` to authenticate.
 ---
 
 ## Usage
@@ -282,4 +283,3 @@ uv run sphinx-build -b html docs docs/_build/html
 ```
 
 Then open `docs/_build/html/index.html` in your browser.
-

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.metadata
+import sys
 from pathlib import Path
 
 project = "uv-init"
@@ -22,7 +23,6 @@ source_suffix = {
 master_doc = "index"
 
 # Add project root to sys.path so autodoc can find uv_init
-import sys
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:

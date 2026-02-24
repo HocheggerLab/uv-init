@@ -2,9 +2,9 @@ import os
 import subprocess
 from pathlib import Path
 
-from dotenv import load_dotenv
 from rich import print as rprint
-from rich.panel import Panel
+
+from uv_init.exceptions import GitSetupError
 
 
 def setup_git_repo(
@@ -12,10 +12,12 @@ def setup_git_repo(
     project_path: Path,
     private: bool = False,
 ) -> None:
-    """Initialize git repo and optionally set up GitHub remote"""
-    # Load environment variables
-    load_dotenv()
-    github_token = os.getenv("GITHUB_TOKEN")
+    """Initialize git repo and optionally set up GitHub remote.
+
+    Authentication is handled by the gh CLI, which uses credentials
+    from `gh auth login`. If GH_TOKEN or GITHUB_TOKEN is set in the
+    shell environment, it will be passed through to gh automatically.
+    """
     repo_name = project_name
     try:
         # Create initial commit
@@ -30,49 +32,46 @@ def setup_git_repo(
             cwd=project_path,
         )
 
-        if github_token and repo_name:
-            # Create GitHub repository
-            visibility = "--private" if private else "--public"
-            create_repo_cmd = [
-                "gh",
-                "repo",
-                "create",
-                repo_name,
-                visibility,
-                "--source",
-                ".",
-                "--remote",
-                "origin",
-                "--push",
-            ]
-
-            # Set GitHub token in environment
-            env = {
-                **dict(os.environ),
-                "GITHUB_TOKEN": github_token,
-            }
-
-            subprocess.run(
-                create_repo_cmd,
-                check=True,
-                cwd=project_path,
-                env=env,
-            )
-
-            rprint(
-                f"[green]GitHub repository {repo_name} created and configured successfully[/green]"
-            )
+        # Prepare environment for gh command
+        # Remove any stale GH_TOKEN/GITHUB_TOKEN that could override
+        # gh auth login credentials. Only pass through if explicitly set.
+        env = dict(os.environ)
+        github_token = os.environ.get("GH_TOKEN") or os.environ.get(
+            "GITHUB_TOKEN"
+        )
+        if github_token:
+            env["GH_TOKEN"] = github_token
         else:
-            rprint(
-                "[yellow]Skipping GitHub setup - no token provided[/yellow]"
-            )
+            env.pop("GH_TOKEN", None)
+            env.pop("GITHUB_TOKEN", None)
+
+        # Create GitHub repository
+        # gh CLI uses stored credentials from 'gh auth login'
+        # unless GH_TOKEN is set in the environment
+        visibility = "--private" if private else "--public"
+        create_repo_cmd = [
+            "gh",
+            "repo",
+            "create",
+            repo_name,
+            visibility,
+            "--source",
+            ".",
+            "--remote",
+            "origin",
+            "--push",
+        ]
+
+        subprocess.run(
+            create_repo_cmd,
+            check=True,
+            cwd=project_path,
+            env=env,
+        )
+
+        rprint(
+            f"[green]GitHub repository {repo_name} created and configured successfully[/green]"
+        )
 
     except subprocess.CalledProcessError as e:
-        rprint(
-            Panel.fit(
-                f"[red]Error:[/red] Failed to set up git repository\n{e}",
-                title="Git Setup Failed",
-                border_style="red",
-            )
-        )
-        exit(1)
+        raise GitSetupError(f"Failed to set up git repository: {e}") from e
