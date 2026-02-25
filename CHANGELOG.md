@@ -1,3 +1,17 @@
+## v0.4.0 (2026-02-25)
+
+### Feat
+
+- switch to ty and add sphinx docs
+
+### Fix
+
+- improve config handling
+
+### Refactor
+
+- simplify env and logging configuration
+
 ## v0.3.10 (2025-02-18)
 
 ### Fix
