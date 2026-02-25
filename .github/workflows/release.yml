@@ -35,7 +35,10 @@ jobs:
         run: pip install commitizen
 
       - name: Get commit message
-        run: echo "COMMIT_MSG=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
+        run: |
+          echo "COMMIT_MSG<<EOF" >> $GITHUB_ENV
+          git log -1 --pretty=%B >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Log commit message format check
         run: |
