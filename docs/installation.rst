@@ -19,16 +19,21 @@ Clone and install
    cd uv-init
    uv sync
 
-Environment file
-----------------
+Author configuration
+--------------------
 
-Create a ``.env`` file in the **uv-init** project root with your author
-details. These values are injected into every project you generate:
+Configure your author details so they are injected into every project
+you generate. Run this once after installing:
 
 .. code-block:: bash
 
-   AUTHOR_NAME='Jane Doe'
-   AUTHOR_EMAIL='jane@example.com'
+   uv-init --config "Jane Doe" "jane@example.com"
+
+This saves your name and email to ``~/.config/uv-init/config.toml``.
+
+If you skip this step, uv-init falls back to your ``git config``
+(``user.name`` / ``user.email``). If neither is set, placeholder
+values are used.
 
 GitHub authentication
 ---------------------

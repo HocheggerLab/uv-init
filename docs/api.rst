@@ -1,6 +1,11 @@
 API Reference
 =============
 
+.. automodule:: uv_init.config
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 .. automodule:: uv_init.router
    :members:
    :undoc-members:
@@ -10,4 +15,3 @@ API Reference
    :members:
    :undoc-members:
    :show-inheritance:
-

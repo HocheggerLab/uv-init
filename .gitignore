@@ -253,6 +253,9 @@ Cargo.lock
 .DS_Store
 Thumbs.db
 
+# Blog drafts
+blog/
+
 # =========================
 # Add Other Tools as Needed
 # =========================
