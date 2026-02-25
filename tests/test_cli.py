@@ -77,6 +77,5 @@ def test_parse_args_config():
 
 def test_parse_args_no_project_name_no_config():
     """Test that missing project_name without --config is an error"""
-    with patch("sys.argv", ["uv-init"]):
-        with pytest.raises(SystemExit):
-            parse_args()
+    with patch("sys.argv", ["uv-init"]), pytest.raises(SystemExit):
+        parse_args()

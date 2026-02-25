@@ -1,10 +1,21 @@
 [project]
 name = "uv-init"
 version = "0.3.10"
-description = "Add your description here"
+description = "CLI tool to scaffold Python projects with uv, pre-configured dev tools, and optional GitHub integration"
 readme = "README.md"
+license = "MIT"
 authors = [
     { name = "hh65", email = "hh65@sussex.ac.uk" }
+]
+keywords = ["uv", "project-template", "scaffolding", "cli", "python"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Software Development :: Code Generators",
 ]
 requires-python = ">=3.13"
 dependencies = [
@@ -55,9 +66,7 @@ lint.select = [
     "SIM", # flake8-simplify
 ]
 lint.ignore = [
-    "E501", # line too long. let black handle this
-    "UP006", "UP007", # type annotation. As using magicgui require runtime type annotation then we disable this.
-    "SIM117", # flake8-simplify - some of merged with statements are not looking great with black, reanble after drop python 3.9
+    "E501", # line too long, handled by ruff formatter
     "ISC001", # string concatenation conflicts with formatter
 ]
 
@@ -104,9 +113,6 @@ major_version_zero = true
 bump_message = "bump: version $current_version → $new_version"
 update_changelog_on_bump = true
 annotated_tag = true
-[tool.uv.workspace]
-members = ["my-app", "test-lib"]
-
 [tool.uv.sources]
 uv-init = { workspace = true }
 
