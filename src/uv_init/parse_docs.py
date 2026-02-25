@@ -3,15 +3,16 @@ Module to copy the README.md, LICENCE, .gitignore and .pre-commit-config.yaml fi
 to the build directory and add author information.
 """
 
-import os
 import shutil
 from argparse import Namespace
 from pathlib import Path
 
-from dotenv import load_dotenv
 from rich import print as rprint
 
+from uv_init.config import load_config
 from uv_init.exceptions import TemplateError
+
+TEMPLATE_DIR = Path(__file__).resolve().parent / "template"
 
 
 def parse_docs(args: Namespace, project_dir: Path) -> None:
@@ -45,7 +46,7 @@ def parse_docs(args: Namespace, project_dir: Path) -> None:
 def _copy_template(template: str, project_dir: Path) -> None:
     """Copy template files to the build directory"""
     try:
-        copy_path = Path.cwd() / f"template/{template}"
+        copy_path = TEMPLATE_DIR / template
         paste_path = project_dir / f"{template}"
         shutil.copy(copy_path, paste_path)
         rprint(f"[green]{template} copied to root project[/green]")
@@ -66,10 +67,9 @@ def _update_configs(project_dir: Path, args: Namespace) -> None:
 
 def _parse_replacement(args: Namespace, content_path: Path) -> dict[str, str]:
     """Load replacements for the README.md files into dictionary."""
-    load_dotenv()
-
-    AUTHOR_NAME = os.getenv("AUTHOR_NAME", "Unknown")
-    AUTHOR_EMAIL = os.getenv("AUTHOR_EMAIL", "No email provided")
+    user_config = load_config()
+    AUTHOR_NAME = user_config.author_name
+    AUTHOR_EMAIL = user_config.author_email
 
     target_version = args.python
 
@@ -168,9 +168,7 @@ def _add_github_workflows(project_dir: Path) -> None:
 
         # Copy workflow files
         for workflow in ["ci.yml", "release.yml"]:
-            source = (
-                Path.cwd() / "template" / ".github" / "workflows" / workflow
-            )
+            source = TEMPLATE_DIR / ".github" / "workflows" / workflow
             dest = workflows_dir / workflow
             shutil.copy(source, dest)
 

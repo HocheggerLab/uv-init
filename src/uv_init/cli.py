@@ -56,6 +56,11 @@ class RichArgumentParser(argparse.ArgumentParser):
             "Create a private GitHub repository (requires --github)\n"
         )
 
+        help_text.append("\n  --config NAME EMAIL ", style="bold yellow")
+        help_text.append(
+            "Configure author name and email for project templates\n"
+        )
+
         # Epilog
         help_text.append(f"\n{self.epilog}\n", style="bold blue")
 
@@ -89,15 +94,24 @@ def parse_args() -> argparse.Namespace:
             "uv-init project_name "
             "[-t lib|package|app] "
             "[-p 3.13|3.12|3.11|3.10] "
-            "[-w] [-g] [--private]"
+            "[-w] [-g] [--private]\n"
+            "       uv-init --config NAME EMAIL"
         ),
         epilog="Thanks for using uv_init!",
     )
 
     parser.add_argument(
         "project_name",
+        nargs="?",
         help="The name of the project (no spaces or under-scores allowed)",
         type=validate_project_name,
+    )
+
+    parser.add_argument(
+        "--config",
+        nargs=2,
+        metavar=("NAME", "EMAIL"),
+        help="Configure author name and email for project templates",
     )
 
     parser.add_argument(
@@ -140,6 +154,14 @@ def parse_args() -> argparse.Namespace:
     )
 
     args = parser.parse_args()
+
+    # --config mode: no project_name needed
+    if args.config:
+        return args
+
+    # Normal mode: project_name is required
+    if args.project_name is None:
+        parser.error("project_name is required (or use --config NAME EMAIL)")
 
     # Validate that --private is only used with --github
     if args.private and not args.github:

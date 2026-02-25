@@ -75,6 +75,11 @@ def initialize_uv_project(args: Namespace) -> None:
 
 def main() -> None:
     args = parse_args()
+    if args.config:
+        from uv_init.config import save_config
+
+        save_config(name=args.config[0], email=args.config[1])
+        return
     initialize_uv_project(args)
 
 

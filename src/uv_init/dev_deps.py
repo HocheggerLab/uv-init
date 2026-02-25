@@ -5,6 +5,8 @@ from rich import print as rprint
 
 from uv_init.exceptions import ConfigError, DependencyError
 
+TEMPLATE_DIR = Path(__file__).resolve().parent / "template"
+
 
 def add_dev_dependencies(project_name: str, project_path: Path) -> None:
     """Add dev dependencies to the project"""
@@ -55,7 +57,7 @@ def add_dev_dependencies(project_name: str, project_path: Path) -> None:
 
 def parse_dev_configs(project_path: Path) -> None:
     """Parse dev configs from the project directory"""
-    config_dir = Path.cwd() / "template"
+    config_dir = TEMPLATE_DIR
     config_files = [
         config_dir / "ty-config.toml",
         config_dir / "ruff-config.toml",
