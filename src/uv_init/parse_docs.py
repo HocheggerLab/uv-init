@@ -3,14 +3,16 @@ Module to copy the README.md, LICENCE, .gitignore and .pre-commit-config.yaml fi
 to the build directory and add author information.
 """
 
-import os
 import shutil
 from argparse import Namespace
 from pathlib import Path
 
-from dotenv import load_dotenv
 from rich import print as rprint
-from rich.panel import Panel
+
+from uv_init.config import load_config
+from uv_init.exceptions import TemplateError
+
+TEMPLATE_DIR = Path(__file__).resolve().parent / "template"
 
 
 def parse_docs(args: Namespace, project_dir: Path) -> None:
@@ -44,7 +46,7 @@ def parse_docs(args: Namespace, project_dir: Path) -> None:
 def _copy_template(template: str, project_dir: Path) -> None:
     """Copy template files to the build directory"""
     try:
-        copy_path = Path.cwd() / f"template/{template}"
+        copy_path = TEMPLATE_DIR / template
         paste_path = project_dir / f"{template}"
         shutil.copy(copy_path, paste_path)
         rprint(f"[green]{template} copied to root project[/green]")
@@ -53,15 +55,8 @@ def _copy_template(template: str, project_dir: Path) -> None:
                 if package.is_dir():
                     shutil.copy(copy_path, package)
             rprint(f"[green]{template} successfully copied[/green]")
-    except FileNotFoundError:
-        rprint(
-            Panel.fit(
-                f"[red]{template} not found[/red]",
-                title=f"{template} Template Not Found",
-                border_style="red",
-            )
-        )
-        exit(1)
+    except FileNotFoundError as e:
+        raise TemplateError(f"{template} template not found") from e
 
 
 def _update_configs(project_dir: Path, args: Namespace) -> None:
@@ -72,10 +67,9 @@ def _update_configs(project_dir: Path, args: Namespace) -> None:
 
 def _parse_replacement(args: Namespace, content_path: Path) -> dict[str, str]:
     """Load replacements for the README.md files into dictionary."""
-    load_dotenv()
-
-    AUTHOR_NAME = os.getenv("AUTHOR_NAME", "Unknown")
-    AUTHOR_EMAIL = os.getenv("AUTHOR_EMAIL", "No email provided")
+    user_config = load_config()
+    AUTHOR_NAME = user_config.author_name
+    AUTHOR_EMAIL = user_config.author_email
 
     target_version = args.python
 
@@ -128,14 +122,7 @@ def _update_content(
                 f.write(content)
         rprint(f"[green]{content_type} successfully updated[/green]")
     except FileNotFoundError as e:
-        rprint(
-            Panel.fit(
-                f"[red]Error:[/red] Failed to update {content_type}\n{e}",
-                title=f"{content_type} not updated",
-                border_style="red",
-            )
-        )
-        exit(1)
+        raise TemplateError(f"Failed to update {content_type}: {e}") from e
 
 
 def _init_version(args: Namespace, project_dir: Path) -> None:
@@ -168,15 +155,8 @@ def _init_version(args: Namespace, project_dir: Path) -> None:
                         f"[green]Version file initialized for {sub_package_name}[/green]"
                     )
 
-    except FileNotFoundError:
-        rprint(
-            Panel.fit(
-                "[red]Version file not found[/red]",
-                title="Version File Not Found",
-                border_style="red",
-            )
-        )
-        exit(1)
+    except FileNotFoundError as e:
+        raise TemplateError("Version file not found") from e
 
 
 def _add_github_workflows(project_dir: Path) -> None:
@@ -188,9 +168,7 @@ def _add_github_workflows(project_dir: Path) -> None:
 
         # Copy workflow files
         for workflow in ["ci.yml", "release.yml"]:
-            source = (
-                Path.cwd() / "template" / ".github" / "workflows" / workflow
-            )
+            source = TEMPLATE_DIR / ".github" / "workflows" / workflow
             dest = workflows_dir / workflow
             shutil.copy(source, dest)
 
@@ -198,10 +176,4 @@ def _add_github_workflows(project_dir: Path) -> None:
             "[green]GitHub workflow configurations added successfully[/green]"
         )
     except FileNotFoundError as e:
-        rprint(
-            Panel.fit(
-                f"[red]Error:[/red] Failed to add GitHub workflows\n{e}",
-                title="GitHub Workflows Not Added",
-                border_style="red",
-            )
-        )
+        raise TemplateError(f"Failed to add GitHub workflows: {e}") from e

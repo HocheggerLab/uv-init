@@ -2,7 +2,10 @@ import subprocess
 from pathlib import Path
 
 from rich import print as rprint
-from rich.panel import Panel
+
+from uv_init.exceptions import ConfigError, DependencyError
+
+TEMPLATE_DIR = Path(__file__).resolve().parent / "template"
 
 
 def add_dev_dependencies(project_name: str, project_path: Path) -> None:
@@ -14,56 +17,49 @@ def add_dev_dependencies(project_name: str, project_path: Path) -> None:
             check=True,
             cwd=project_path,
         )
-        result = subprocess.run(
+        subprocess.run(
             [
                 "uv",
                 "add",
                 "--dev",
                 "ruff",
                 "pytest",
-                "mypy",
+                "ty",
                 "commitizen",
                 "pre-commit",
             ],
             check=True,
             cwd=project_path,
         )
-
-        if result.returncode == 0:
-            # Install pre-commit hooks
-            subprocess.run(
-                [
-                    "uv",
-                    "run",
-                    "pre-commit",
-                    "install",
-                    "--hook-type",
-                    "pre-commit",
-                    "--hook-type",
-                    "commit-msg",
-                ],
-                check=True,
-                cwd=project_path,
-            )
-            rprint(
-                "[green]Development dependencies and pre-commit hooks added successfully.[/green]"
-            )
-    except subprocess.CalledProcessError as e:
-        rprint(
-            Panel.fit(
-                f"[red]Error:[/red] Failed to add development dependencies\n{e}",
-                title="Dependency Addition Failed",
-                border_style="red",
-            )
+        # Install pre-commit hooks
+        subprocess.run(
+            [
+                "uv",
+                "run",
+                "pre-commit",
+                "install",
+                "--hook-type",
+                "pre-commit",
+                "--hook-type",
+                "commit-msg",
+            ],
+            check=True,
+            cwd=project_path,
         )
-        exit(1)
+        rprint(
+            "[green]Development dependencies and pre-commit hooks added successfully.[/green]"
+        )
+    except subprocess.CalledProcessError as e:
+        raise DependencyError(
+            f"Failed to add development dependencies: {e}"
+        ) from e
 
 
 def parse_dev_configs(project_path: Path) -> None:
     """Parse dev configs from the project directory"""
-    config_dir = Path.cwd() / "template"
+    config_dir = TEMPLATE_DIR
     config_files = [
-        config_dir / "mypy-config.toml",
+        config_dir / "ty-config.toml",
         config_dir / "ruff-config.toml",
         config_dir / "pytest-config.toml",
         config_dir / "commitizen-config.toml",
@@ -90,11 +86,4 @@ def parse_dev_configs(project_path: Path) -> None:
         rprint("[green]Added config files to pyproject[/green]")
 
     except FileNotFoundError as e:
-        rprint(
-            Panel.fit(
-                f"[red]Error:[/red] pyproject.toml not found\n{e}",
-                title="Pyproject.toml Not Found",
-                border_style="red",
-            )
-        )
-        exit(1)
+        raise ConfigError(f"pyproject.toml not found: {e}") from e

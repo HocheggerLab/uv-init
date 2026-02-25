@@ -1,0 +1,27 @@
+# =========================
+# Ty Configuration Section
+# =========================
+
+[tool.ty.environment]
+python-version = "{python_version}"
+
+[tool.ty.src]
+include = ["src", "tests"]
+exclude = [
+    "**/.venv/",
+    "**/venv/",
+    "**/env/",
+    "**/build/",
+    "**/dist/",
+    "**/migrations/",
+]
+
+[tool.ty.rules]
+all = "error"
+
+[tool.ty.analysis]
+# Mirrors mypy per-module `ignore_missing_imports` overrides.
+replace-imports-with-any = [
+    "some_untyped_package.**",
+    "another_untyped_package.**",
+]
