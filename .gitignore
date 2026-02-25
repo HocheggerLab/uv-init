@@ -109,11 +109,10 @@ celerybeat.pid
 
 # Environments
 
-# But don't ignore template .env files
-!./template/.env
-!./template/.env.*
-
 .env
+# But don't ignore template .env files
+!src/uv_init/template/.env
+!src/uv_init/template/.env.*
 .venv
 env/
 venv/

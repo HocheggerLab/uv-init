@@ -4,7 +4,9 @@ from pathlib import Path
 from unittest.mock import call, mock_open, patch
 
 import pytest
+
 from uv_init.dev_deps import add_dev_dependencies, parse_dev_configs
+from uv_init.exceptions import ConfigError, DependencyError
 
 
 def test_add_dev_dependencies_success():
@@ -30,7 +32,7 @@ def test_add_dev_dependencies_success():
                 "--dev",
                 "ruff",
                 "pytest",
-                "mypy",
+                "ty",
                 "commitizen",
                 "pre-commit",
             ],
@@ -61,7 +63,7 @@ def test_add_dev_dependencies_failure():
     with patch(
         "subprocess.run", side_effect=subprocess.CalledProcessError(1, "cmd")
     ) as mock_run:
-        with pytest.raises(SystemExit):
+        with pytest.raises(DependencyError):
             add_dev_dependencies("fake_project", project_path)
 
         mock_run.assert_called_once()
@@ -114,10 +116,8 @@ def test_parse_dev_configs_missing_file():
                 "[Errno 2] No such file or directory: '/fake/path/pyproject.toml'"
             )
 
-            with pytest.raises(SystemExit) as exc_info:
+            with pytest.raises(ConfigError):
                 parse_dev_configs(project_path)
-
-            assert exc_info.value.code == 1
 
 
 def test_parse_dev_configs_pyproject_missing():
@@ -126,5 +126,5 @@ def test_parse_dev_configs_pyproject_missing():
     with patch("builtins.open", mock_open()) as mock_file:
         mock_file.side_effect = FileNotFoundError
 
-        with pytest.raises(SystemExit):
+        with pytest.raises(ConfigError):
             parse_dev_configs(project_path)
