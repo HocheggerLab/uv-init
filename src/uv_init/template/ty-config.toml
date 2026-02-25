@@ -3,7 +3,7 @@
 # =========================
 
 [tool.ty.environment]
-python-version = {python_version}
+python-version = "{python_version}"
 
 [tool.ty.src]
 include = ["src", "tests"]

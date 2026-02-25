@@ -1,9 +1,12 @@
 import shutil
 from argparse import Namespace
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
+import uv_init.parse_docs
+from uv_init.config import UserConfig
 from uv_init.exceptions import TemplateError
 from uv_init.parse_docs import (
     _copy_template,
@@ -13,7 +16,7 @@ from uv_init.parse_docs import (
 
 
 @pytest.fixture
-def temp_project_structure(tmp_path):
+def temp_project_structure(tmp_path, monkeypatch):
     """Create a temporary project structure with template files.
 
     Returns:
@@ -32,24 +35,22 @@ def temp_project_structure(tmp_path):
     (template_dir / "LICENSE").write_text("Sample License")
     (template_dir / ".gitignore").write_text("*.pyc\n__pycache__/")
 
-    # Monkeypatch cwd to our temp directory
-    with pytest.MonkeyPatch().context() as mp:
-        mp.chdir(tmp_path)
-        yield project_dir, template_dir
+    # Monkeypatch TEMPLATE_DIR to point at our temp template directory
+    monkeypatch.setattr(uv_init.parse_docs, "TEMPLATE_DIR", template_dir)
 
-    # Cleanup happens automatically thanks to tmp_path
+    yield project_dir, template_dir
 
 
 def test_copy_template_success(temp_project_structure):
     """Test successful template file copying."""
-    project_dir, _ = temp_project_structure
+    project_dir, template_dir = temp_project_structure
 
     # Test copying each template file
     for template in ["README.md", "LICENSE", ".gitignore"]:
         _copy_template(template, project_dir)
         assert (project_dir / template).exists()
         assert (project_dir / template).read_text() == (
-            Path.cwd() / f"template/{template}"
+            template_dir / template
         ).read_text()
 
 
@@ -91,12 +92,11 @@ A project using Python {python_version}
     # Define args
     args = Namespace(project_name="TestProject", python="3.9")
 
-    # Set environment variables for the test
-    with pytest.MonkeyPatch().context() as mp:
-        mp.setenv("AUTHOR_NAME", "Test Author")
-        mp.setenv("AUTHOR_EMAIL", "test@example.com")
-
-        # Call the function
+    # Mock the config to return test author info
+    mock_config = UserConfig(
+        author_name="Test Author", author_email="test@example.com"
+    )
+    with patch("uv_init.parse_docs.load_config", return_value=mock_config):
         _update_content(project_dir, args, "README.md")
 
     # Check README.md content
@@ -120,11 +120,18 @@ def test_python_version_matrix():
         ("3.10", 'python-version: ["3.10"]'),
     ]
 
-    for python_version, expected in test_cases:
-        args = Namespace(python=python_version, project_name="test-project")
-        replacements = _parse_replacement(args, Path("/fake/path"))
+    mock_config = UserConfig(
+        author_name="Test Author", author_email="test@example.com"
+    )
+    with patch("uv_init.parse_docs.load_config", return_value=mock_config):
+        for python_version, expected in test_cases:
+            args = Namespace(
+                python=python_version, project_name="test-project"
+            )
+            replacements = _parse_replacement(args, Path("/fake/path"))
 
-        actual_matrix = replacements['python-version: ["3.12"]']
-        assert actual_matrix == expected, (
-            f"For Python {python_version}, expected {expected} but got {actual_matrix}"
-        )
+            actual_matrix = replacements['python-version: ["3.12"]']
+            assert actual_matrix == expected, (
+                f"For Python {python_version}, expected {expected} "
+                f"but got {actual_matrix}"
+            )

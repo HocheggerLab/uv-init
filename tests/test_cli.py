@@ -63,3 +63,20 @@ def test_parse_args_invalid_type(monkeypatch):
     )
     with pytest.raises(SystemExit):
         parse_args()
+
+
+def test_parse_args_config():
+    """Test --config flag parses name and email"""
+    with patch(
+        "sys.argv", ["uv-init", "--config", "Test Author", "test@example.com"]
+    ):
+        args = parse_args()
+        assert args.config == ["Test Author", "test@example.com"]
+        assert args.project_name is None
+
+
+def test_parse_args_no_project_name_no_config():
+    """Test that missing project_name without --config is an error"""
+    with patch("sys.argv", ["uv-init"]):
+        with pytest.raises(SystemExit):
+            parse_args()
