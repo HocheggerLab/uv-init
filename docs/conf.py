@@ -13,6 +13,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "myst_parser",
     "sphinx_autodoc_typehints",
+    "sphinx_rtd_theme",
 ]
 
 source_suffix = {
@@ -35,4 +36,4 @@ except importlib.metadata.PackageNotFoundError:
     release = "0.0.0"
 version = release
 
-html_theme = "alabaster"
+html_theme = "sphinx_rtd_theme"
