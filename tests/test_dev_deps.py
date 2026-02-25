@@ -110,14 +110,16 @@ def test_parse_dev_configs_success():
 def test_parse_dev_configs_missing_file():
     project_path = Path("/fake/path")
 
-    with patch.object(Path, "exists", return_value=False):
-        with patch.object(Path, "open") as mock_open:
-            mock_open.side_effect = FileNotFoundError(
-                "[Errno 2] No such file or directory: '/fake/path/pyproject.toml'"
-            )
+    with (
+        patch.object(Path, "exists", return_value=False),
+        patch.object(Path, "open") as mock_open,
+    ):
+        mock_open.side_effect = FileNotFoundError(
+            "[Errno 2] No such file or directory: '/fake/path/pyproject.toml'"
+        )
 
-            with pytest.raises(ConfigError):
-                parse_dev_configs(project_path)
+        with pytest.raises(ConfigError):
+            parse_dev_configs(project_path)
 
 
 def test_parse_dev_configs_pyproject_missing():
