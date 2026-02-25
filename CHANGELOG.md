@@ -1,3 +1,9 @@
+## v0.4.1 (2026-02-25)
+
+### Fix
+
+- improve config handling
+
 ## v0.4.0 (2026-02-25)
 
 ### Feat
