@@ -38,15 +38,22 @@ values are used.
 GitHub authentication
 ---------------------
 
-If you plan to use the ``--github`` flag, authenticate the ``gh`` CLI first:
+If you plan to use the ``--github`` flag, authenticate the ``gh`` CLI
+first using OAuth:
 
 .. code-block:: bash
 
    gh auth login
 
-No token needs to be stored in ``.env``. If ``GH_TOKEN`` or
-``GITHUB_TOKEN`` is already set in your shell, ``gh`` will pick it up
-automatically.
+Follow the interactive prompts to authenticate via your browser. This
+stores credentials securely in the ``gh`` keychain — no tokens need to
+be stored in any file.
+
+.. note::
+
+   If ``GH_TOKEN`` or ``GITHUB_TOKEN`` is already exported in your shell,
+   ``gh`` will use it automatically. However, OAuth via ``gh auth login``
+   is the recommended approach.
 
 Shell alias (recommended)
 -------------------------

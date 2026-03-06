@@ -120,6 +120,7 @@ Standard project
    ├── pyproject.toml
    ├── README.md
    ├── LICENSE
+   ├── .env.example
    └── .pre-commit-config.yaml
 
 Workspace
@@ -266,7 +267,20 @@ this configuration.
 Environment variables
 ^^^^^^^^^^^^^^^^^^^^^
 
-Control logging behaviour via the ``.env`` file or shell environment:
+Control logging behaviour via the ``.env`` file or shell environment.
+Each generated project includes a ``.env.example`` with sensible
+defaults. Copy it to activate:
+
+.. code-block:: bash
+
+   cp .env.example .env
+
+.. warning::
+
+   The ``.env`` file is gitignored by default. Never commit it —
+   it is for local configuration and secrets only.
+
+Available variables:
 
 .. list-table::
    :header-rows: 1
@@ -311,9 +325,10 @@ Environment-specific configuration
 
 Create environment-specific ``.env`` files to override defaults:
 
-- ``.env`` — base defaults (checked into version control)
-- ``.env.development`` — local development overrides
-- ``.env.production`` — production settings
+- ``.env.example`` — template with defaults (checked into version control)
+- ``.env`` — your local copy of ``.env.example`` (gitignored, never commit)
+- ``.env.development`` — local development overrides (gitignored)
+- ``.env.production`` — production settings (gitignored)
 
 Example ``.env.production``:
 

@@ -22,7 +22,7 @@ def parse_docs(args: Namespace, project_dir: Path) -> None:
         "LICENSE",
         ".gitignore",
         ".pre-commit-config.yaml",
-        ".env",
+        ".env.example",
     ]:
         _copy_template(template, project_dir)
 

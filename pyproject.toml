@@ -29,6 +29,9 @@ uv-start = "uv_start.__main__:main"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.hatch.build]
+artifacts = ["src/uv_start/template/.env.example"]
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/uv_start"]
 

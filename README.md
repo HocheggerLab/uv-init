@@ -82,7 +82,25 @@ uv-start --config "Jane Doe" "jane@example.com"
 
 If you skip this step, uv-start falls back to your `git config` (`user.name` / `user.email`).
 
-GitHub authentication is handled by the `gh` CLI. Run `gh auth login` to authenticate.
+### GitHub authentication
+
+If you plan to use the `--github` flag, authenticate the `gh` CLI first:
+
+```bash
+gh auth login
+```
+
+Follow the interactive prompts to authenticate via OAuth (browser). This stores credentials securely via the `gh` keychain — no tokens need to be stored in any file.
+
+### Environment configuration
+
+Each generated project includes a `.env.example` file with placeholder values for the logging configuration. Copy it to `.env` to activate it:
+
+```bash
+cp .env.example .env
+```
+
+The `.env` file is gitignored by default — never commit it. Keep real credentials and environment-specific settings in `.env` only.
 ---
 
 ## Usage
@@ -160,6 +178,7 @@ project_name/
 ├── pyproject.toml
 ├── README.md
 ├── LICENSE
+├── .env.example
 └── .pre-commit-config.yaml
 ```
 For workspaces:
