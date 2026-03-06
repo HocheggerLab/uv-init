@@ -5,8 +5,8 @@ from unittest.mock import ANY, call, mock_open, patch
 
 import pytest
 
-from uv_init.dev_deps import add_dev_dependencies, parse_dev_configs
-from uv_init.exceptions import ConfigError, DependencyError
+from uv_start.dev_deps import add_dev_dependencies, parse_dev_configs
+from uv_start.exceptions import ConfigError, DependencyError
 
 
 def test_add_dev_dependencies_success():

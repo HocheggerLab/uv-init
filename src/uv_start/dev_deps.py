@@ -3,8 +3,8 @@ from pathlib import Path
 
 from rich import print as rprint
 
-from uv_init.config import clean_env
-from uv_init.exceptions import ConfigError, DependencyError
+from uv_start.config import clean_env
+from uv_start.exceptions import ConfigError, DependencyError
 
 TEMPLATE_DIR = Path(__file__).resolve().parent / "template"
 

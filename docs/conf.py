@@ -23,7 +23,7 @@ source_suffix = {
 
 master_doc = "index"
 
-# Add project root to sys.path so autodoc can find uv_init
+# Add project root to sys.path so autodoc can find uv_start
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:

@@ -6,8 +6,8 @@ from pathlib import Path
 from rich import print as rprint
 from rich.prompt import Prompt
 
-from uv_init.config import clean_env
-from uv_init.exceptions import ProjectCreationError
+from uv_start.config import clean_env
+from uv_start.exceptions import ProjectCreationError
 
 
 @dataclass

@@ -5,8 +5,8 @@ from unittest.mock import patch
 
 import pytest
 
-from uv_init.__main__ import initialize_uv_project
-from uv_init.exceptions import DependencyError, GitSetupError
+from uv_start.__main__ import initialize_uv_start
+from uv_start.exceptions import DependencyError, GitSetupError
 
 
 @pytest.fixture
@@ -45,7 +45,7 @@ def test_basic_lib_project(temp_project_dir):
         github=False,
     )
 
-    initialize_uv_project(args)
+    initialize_uv_start(args)
 
     # Verify basic project structure
     assert (project_path / "src" / "test_lib").exists(), (
@@ -115,7 +115,7 @@ def test_basic_app_project(temp_project_dir):
         github=False,
     )
 
-    initialize_uv_project(args)
+    initialize_uv_start(args)
 
     # Verify app project structure
     assert (project_path / "src" / "test_app").exists(), (
@@ -181,7 +181,7 @@ def test_workspace_project(temp_project_dir):
     with patch(
         "rich.prompt.Prompt.ask", side_effect=["y", "common_utils", "n"]
     ):
-        initialize_uv_project(args)
+        initialize_uv_start(args)
 
     # Verify workspace structure
     assert (project_path / "packages").exists(), (
@@ -243,7 +243,7 @@ def test_project_with_different_python(temp_project_dir):
         github=False,
     )
 
-    initialize_uv_project(args)
+    initialize_uv_start(args)
 
     # Verify Python version in configs
     pyproject_content = (project_path / "pyproject.toml").read_text()
@@ -264,11 +264,11 @@ def test_rollback_on_phase1_failure(temp_project_dir):
     )
 
     with patch(
-        "uv_init.__main__.add_dev_dependencies",
+        "uv_start.__main__.add_dev_dependencies",
         side_effect=DependencyError("mock dep failure"),
     ):
         with pytest.raises(SystemExit) as exc_info:
-            initialize_uv_project(args)
+            initialize_uv_start(args)
 
         assert exc_info.value.code == 1
 
@@ -293,11 +293,11 @@ def test_github_failure_keeps_project(temp_project_dir):
     )
 
     with patch(
-        "uv_init.__main__.setup_git_repo",
+        "uv_start.__main__.setup_git_repo",
         side_effect=GitSetupError("mock gh failure"),
     ):
         # Should NOT raise — just warn
-        initialize_uv_project(args)
+        initialize_uv_start(args)
 
     # Project should still exist
     assert project_path.exists(), (

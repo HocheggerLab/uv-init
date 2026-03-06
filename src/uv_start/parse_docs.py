@@ -9,8 +9,8 @@ from pathlib import Path
 
 from rich import print as rprint
 
-from uv_init.config import load_config
-from uv_init.exceptions import TemplateError
+from uv_start.config import load_config
+from uv_start.exceptions import TemplateError
 
 TEMPLATE_DIR = Path(__file__).resolve().parent / "template"
 

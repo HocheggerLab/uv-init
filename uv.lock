@@ -5,7 +5,7 @@ requires-python = ">=3.13"
 [manifest]
 members = [
     "test-gh",
-    "uv-init",
+    "uv-start",
 ]
 
 [[package]]
@@ -900,7 +900,7 @@ wheels = [
 ]
 
 [[package]]
-name = "uv-init"
+name = "uv-start"
 version = "0.4.1"
 source = { editable = "." }
 dependencies = [
@@ -922,7 +922,7 @@ dev = [
     { name = "sphinx-rtd-theme" },
     { name = "ty" },
     { name = "typing-extensions" },
-    { name = "uv-init" },
+    { name = "uv-start" },
 ]
 
 [package.metadata]
@@ -943,7 +943,7 @@ dev = [
     { name = "sphinx-rtd-theme", specifier = ">=3.1.0" },
     { name = "ty", specifier = ">=0.0.18" },
     { name = "typing-extensions", specifier = ">=4.13.2" },
-    { name = "uv-init", editable = "." },
+    { name = "uv-start", editable = "." },
 ]
 
 [[package]]

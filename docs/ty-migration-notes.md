@@ -6,8 +6,8 @@ This repository has been migrated from **mypy** to **Astral ty** for generated p
 
 - Replaced the generated type-check config fragment:
   - `template/mypy-config.toml` ➜ `template/ty-config.toml`
-- Updated config assembly in `src/uv_init/dev_deps.py` so generated `pyproject.toml` files now include `[tool.ty]` settings.
-- Updated generated dev dependencies in `src/uv_init/dev_deps.py`:
+- Updated config assembly in `src/uv_start/dev_deps.py` so generated `pyproject.toml` files now include `[tool.ty]` settings.
+- Updated generated dev dependencies in `src/uv_start/dev_deps.py`:
   - `uv add --dev ... mypy ...` ➜ `uv add --dev ... ty ...`
 - Updated generated CI template (`template/.github/workflows/ci.yml`) to run Ty:
   - `uv run ty check src tests`

@@ -7,12 +7,12 @@ from pathlib import Path
 from rich import print as rprint
 from rich.panel import Panel
 
-from uv_init.cli import parse_args
-from uv_init.dev_deps import add_dev_dependencies, parse_dev_configs
-from uv_init.exceptions import GitSetupError, UvInitError
-from uv_init.parse_docs import parse_docs
-from uv_init.router import CommandDispatcher
-from uv_init.setup_git_repo import setup_git_repo
+from uv_start.cli import parse_args
+from uv_start.dev_deps import add_dev_dependencies, parse_dev_configs
+from uv_start.exceptions import GitSetupError, UvInitError
+from uv_start.parse_docs import parse_docs
+from uv_start.router import CommandDispatcher
+from uv_start.setup_git_repo import setup_git_repo
 
 
 def _rollback(project_path: Path) -> None:
@@ -24,7 +24,7 @@ def _rollback(project_path: Path) -> None:
         )
 
 
-def initialize_uv_project(args: Namespace) -> None:
+def initialize_uv_start(args: Namespace) -> None:
     """Initialize a new uv project with two-phase execution.
 
     Phase 1 (local): scaffolding, deps, configs, templates.
@@ -76,11 +76,11 @@ def initialize_uv_project(args: Namespace) -> None:
 def main() -> None:
     args = parse_args()
     if args.config:
-        from uv_init.config import save_config
+        from uv_start.config import save_config
 
         save_config(name=args.config[0], email=args.config[1])
         return
-    initialize_uv_project(args)
+    initialize_uv_start(args)
 
 
 if __name__ == "__main__":

@@ -97,7 +97,7 @@ def parse_args() -> argparse.Namespace:
             "[-w] [-g] [--private]\n"
             "       uv-init --config NAME EMAIL"
         ),
-        epilog="Thanks for using uv_init!",
+        epilog="Thanks for using uv_start!",
     )
 
     parser.add_argument(

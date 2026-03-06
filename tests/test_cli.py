@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import pytest
 
-from uv_init.cli import parse_args, validate_project_name
+from uv_start.cli import parse_args, validate_project_name
 
 
 def test_validate_project_name_valid():

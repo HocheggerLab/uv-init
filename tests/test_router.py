@@ -5,8 +5,8 @@ from unittest.mock import ANY, Mock, patch
 
 import pytest
 
-from uv_init.exceptions import ProjectCreationError
-from uv_init.router import CommandDispatcher
+from uv_start.exceptions import ProjectCreationError
+from uv_start.router import CommandDispatcher
 
 
 @pytest.fixture
@@ -30,7 +30,7 @@ def mock_subprocess():
 @pytest.fixture
 def mock_rprint():
     """Mock rich.print"""
-    with patch("uv_init.router.rprint") as mock_print:
+    with patch("uv_start.router.rprint") as mock_print:
         yield mock_print
 
 

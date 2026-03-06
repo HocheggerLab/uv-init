@@ -57,10 +57,10 @@ where the project lives. A shell alias hides this detail:
 .. code-block:: bash
 
    # Add to ~/.zshrc or ~/.bashrc
-   uv_init() {
+   uv_start() {
      UV_ORIGINAL_CWD="$PWD" uv run --directory /path/to/uv-init uv-init "$@"
    }
-   alias uv-init='uv_init'
+   alias uv-init='uv_start'
 
 After restarting your shell you can run ``uv-init`` from any directory:
 

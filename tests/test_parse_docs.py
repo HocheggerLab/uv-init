@@ -5,10 +5,10 @@ from unittest.mock import patch
 
 import pytest
 
-import uv_init.parse_docs
-from uv_init.config import UserConfig
-from uv_init.exceptions import TemplateError
-from uv_init.parse_docs import (
+import uv_start.parse_docs
+from uv_start.config import UserConfig
+from uv_start.exceptions import TemplateError
+from uv_start.parse_docs import (
     _copy_template,
     _parse_replacement,
     _update_content,
@@ -36,7 +36,7 @@ def temp_project_structure(tmp_path, monkeypatch):
     (template_dir / ".gitignore").write_text("*.pyc\n__pycache__/")
 
     # Monkeypatch TEMPLATE_DIR to point at our temp template directory
-    monkeypatch.setattr(uv_init.parse_docs, "TEMPLATE_DIR", template_dir)
+    monkeypatch.setattr(uv_start.parse_docs, "TEMPLATE_DIR", template_dir)
 
     yield project_dir, template_dir
 
@@ -96,7 +96,7 @@ A project using Python {python_version}
     mock_config = UserConfig(
         author_name="Test Author", author_email="test@example.com"
     )
-    with patch("uv_init.parse_docs.load_config", return_value=mock_config):
+    with patch("uv_start.parse_docs.load_config", return_value=mock_config):
         _update_content(project_dir, args, "README.md")
 
     # Check README.md content
@@ -124,7 +124,7 @@ def test_python_version_matrix():
     mock_config = UserConfig(
         author_name="Test Author", author_email="test@example.com"
     )
-    with patch("uv_init.parse_docs.load_config", return_value=mock_config):
+    with patch("uv_start.parse_docs.load_config", return_value=mock_config):
         for python_version, expected in test_cases:
             args = Namespace(
                 python=python_version, project_name="test-project"
