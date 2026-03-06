@@ -1,7 +1,7 @@
 # test_dev_deps.py
 import subprocess
 from pathlib import Path
-from unittest.mock import call, mock_open, patch
+from unittest.mock import ANY, call, mock_open, patch
 
 import pytest
 
@@ -22,6 +22,7 @@ def test_add_dev_dependencies_success():
             ["uv", "add", "python-dotenv"],
             check=True,
             cwd=project_path,
+            env=ANY,
         ), "Failed to install python-dotenv"
 
         # Check dev dependencies installation
@@ -38,6 +39,7 @@ def test_add_dev_dependencies_success():
             ],
             check=True,
             cwd=project_path,
+            env=ANY,
         ), "Failed to install dev dependencies with uv add"
 
         # Check pre-commit hooks installation
@@ -54,6 +56,7 @@ def test_add_dev_dependencies_success():
             ],
             check=True,
             cwd=project_path,
+            env=ANY,
         ), "Failed to install pre-commit hooks"
 
 

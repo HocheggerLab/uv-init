@@ -17,15 +17,34 @@ CONFIG_DIR = Path.home() / ".config" / "uv-init"
 CONFIG_FILE = CONFIG_DIR / "config.toml"
 
 
-def clean_env() -> dict[str, str]:
-    """Return a copy of the current environment with VIRTUAL_ENV removed.
+_ENV_ALLOWLIST = {
+    "PATH",
+    "HOME",
+    "USER",
+    "LOGNAME",
+    "SHELL",
+    "LANG",
+    "LC_ALL",
+    "LC_CTYPE",
+    "TMPDIR",
+    "TEMP",
+    "TMP",
+    "XDG_CACHE_HOME",
+    "XDG_CONFIG_HOME",
+    "XDG_DATA_HOME",
+    "USERPROFILE",  # Windows
+    "APPDATA",  # Windows
+    "SYSTEMROOT",  # Windows
+}
 
-    Prevents uv subprocess warnings when the tool is run inside an activated
-    virtualenv that doesn't match the target project's environment.
+
+def clean_env() -> dict[str, str]:
+    """Return a minimal environment safe for uv/git subprocesses.
+
+    Only passes through variables needed for process execution, explicitly
+    excluding secrets and tokens that may be exported in the shell session.
     """
-    env = os.environ.copy()
-    env.pop("VIRTUAL_ENV", None)
-    return env
+    return {k: v for k, v in os.environ.items() if k in _ENV_ALLOWLIST}
 
 
 @dataclass

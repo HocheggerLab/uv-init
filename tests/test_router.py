@@ -1,7 +1,7 @@
 import subprocess
 from argparse import Namespace
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import ANY, Mock, patch
 
 import pytest
 
@@ -77,6 +77,7 @@ def test_lib_project(mock_subprocess, dispatcher, base_args, mock_fs):
         ["uv", "init", "test-project", "--lib", "--python", "3.12"],
         check=True,
         cwd=dispatcher.original_cwd,
+        env=ANY,
     )
 
 
@@ -89,6 +90,7 @@ def test_package_project(mock_subprocess, dispatcher, base_args, mock_fs):
         ["uv", "init", "test-project", "--package", "--python", "3.12"],
         check=True,
         cwd=dispatcher.original_cwd,
+        env=ANY,
     )
 
 
