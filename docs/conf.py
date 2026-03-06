@@ -4,7 +4,7 @@ import importlib.metadata
 import sys
 from pathlib import Path
 
-project = "uv-init"
+project = "uv-start"
 
 # General configuration
 extensions = [
@@ -31,7 +31,7 @@ if str(SRC) not in sys.path:
 
 # Version info
 try:
-    release = importlib.metadata.version("uv-init")
+    release = importlib.metadata.version("uv-start")
 except importlib.metadata.PackageNotFoundError:
     release = "0.0.0"
 version = release

@@ -67,7 +67,7 @@ def test_load_config_partial_git(tmp_path, monkeypatch):
 
 def test_save_config(tmp_path, monkeypatch):
     """Test saving config writes valid TOML."""
-    config_dir = tmp_path / "uv-init"
+    config_dir = tmp_path / "uv-start"
     config_file = config_dir / "config.toml"
     monkeypatch.setattr("uv_start.config.CONFIG_DIR", config_dir)
     monkeypatch.setattr("uv_start.config.CONFIG_FILE", config_file)
@@ -82,7 +82,7 @@ def test_save_config(tmp_path, monkeypatch):
 
 def test_save_then_load(tmp_path, monkeypatch):
     """Test round-trip: save then load."""
-    config_dir = tmp_path / "uv-init"
+    config_dir = tmp_path / "uv-start"
     config_file = config_dir / "config.toml"
     monkeypatch.setattr("uv_start.config.CONFIG_DIR", config_dir)
     monkeypatch.setattr("uv_start.config.CONFIG_FILE", config_file)

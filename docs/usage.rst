@@ -6,7 +6,7 @@ Basic command
 
 .. code-block:: bash
 
-   uv-init <project-name> [options]
+   uv-start <project-name> [options]
 
 The project name must not contain spaces or underscores.
 
@@ -36,7 +36,7 @@ Options
      - Make the GitHub repository private. Requires ``--github``.
    * - ``--config NAME EMAIL``
      - Save author name and email for project templates.
-       Stored in ``~/.config/uv-init/config.toml``.
+       Stored in ``~/.config/uv-start/config.toml``.
 
 Examples
 --------
@@ -46,7 +46,7 @@ Create a library (default)
 
 .. code-block:: bash
 
-   uv-init my-lib
+   uv-start my-lib
 
 Creates a ``my-lib/`` directory with a ``src/my_lib/`` package, test
 directory, and all dev-tool configuration.
@@ -56,7 +56,7 @@ Create an installable package
 
 .. code-block:: bash
 
-   uv-init my-cli -t package
+   uv-start my-cli -t package
 
 Same as a library but also registers a console script entry-point so the
 package can be run from the command line.
@@ -66,7 +66,7 @@ Specify a Python version
 
 .. code-block:: bash
 
-   uv-init my-project -p 3.12
+   uv-start my-project -p 3.12
 
 Target Python 3.12 instead of the default 3.13.
 
@@ -75,14 +75,14 @@ Create a project with a GitHub repo
 
 .. code-block:: bash
 
-   uv-init my-project -g
+   uv-start my-project -g
 
 Initialises a local Git repo, creates a **public** GitHub remote, pushes
 an initial commit, and sets up CI workflows.
 
 .. code-block:: bash
 
-   uv-init my-project -g --private
+   uv-start my-project -g --private
 
 Same as above but the GitHub repository is **private**.
 
@@ -91,7 +91,7 @@ Create a workspace (monorepo)
 
 .. code-block:: bash
 
-   uv-init my-workspace -w
+   uv-start my-workspace -w
 
 Sets up a uv workspace. You will be interactively prompted to:
 
@@ -102,7 +102,7 @@ Combine workspace and GitHub:
 
 .. code-block:: bash
 
-   uv-init my-workspace -w -g
+   uv-start my-workspace -w -g
 
 Generated project structure
 ---------------------------

@@ -1,4 +1,4 @@
-# uv-init
+# uv-start
 
 A command-line tool for initializing Python projects using the new uv project management tool:
 https://docs.astral.sh/uv/
@@ -41,7 +41,7 @@ Helfrid Hochegger
 ## Contact
 Created by Helfrid Hochegger
 Email: hh65@sussex.ac.uk
-GitHub Issues: https://github.com/Helfrid/uv-init/issues
+GitHub Issues: https://github.com/Helfrid/uv-start/issues
 
 ---
 
@@ -71,16 +71,16 @@ This project is licensed under the MIT License
 ## Installation
 
 ```bash
-git clone https://github.com/Helfrid/uv-init.git
-cd uv-init && uv sync
+git clone https://github.com/Helfrid/uv-start.git
+cd uv-start && uv sync
 ```
 
 Configure your author details (run once):
 ```bash
-uv-init --config "Jane Doe" "jane@example.com"
+uv-start --config "Jane Doe" "jane@example.com"
 ```
 
-If you skip this step, uv-init falls back to your `git config` (`user.name` / `user.email`).
+If you skip this step, uv-start falls back to your `git config` (`user.name` / `user.email`).
 
 GitHub authentication is handled by the `gh` CLI. Run `gh auth login` to authenticate.
 ---
@@ -97,21 +97,21 @@ bash
 ```
 cd "parent-directory"
 UV_ORIGINAL_CWD="$PWD"
-uv run --directory path_to/uv-init uv-init project-name [options]
+uv run --directory path_to/uv-start uv-start project-name [options]
 ```
 Alternatively, add this function to your .zshrc or .bashrc config file
 
 bash
 ```
-uv_init() {
-  UV_ORIGINAL_CWD="$PWD" uv run --directory path_to/uv-init uv-init "$@"
+uv_start() {
+  UV_ORIGINAL_CWD="$PWD" uv run --directory path_to/uv-start uv-start "$@"
 }
-alias uv-init='uv_init'
+alias uv-start='uv_start'
 ```
 The restart your shell cd to the desried parent directory and type
 bash
 ```
-uv-init project-name [options]
+uv-start project-name [options]
 ```
 
 Options:
@@ -127,20 +127,20 @@ Options:
 Create a basic library:
 bash
 ```
-uv-init my-package -t package -p 3.13
+uv-start my-package -t package -p 3.13
 ```
 
 Create a workspace with GitHub repository:
 
 bash
 ```
-uv-init my-workspace -w -g
+uv-start my-workspace -w -g
 ```
 creates an upstream main branch on github (default public, use --private for private repos)
 
 bash
 ```
-uv-init my-workspace -w -g
+uv-start my-workspace -w -g
 ```
 This will generate a uv workspace (see: https://docs.astral.sh/uv/concepts/projects/workspaces/)
 The user will be prompted to add a common-utils library and an additional project.

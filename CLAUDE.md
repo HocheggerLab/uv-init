@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**uv-init** is a Python CLI tool that wraps around the `uv` package manager to create well-configured Python projects with modern development practices. It creates projects with pre-configured development tools, optional GitHub integration, and comprehensive template files.
+**uv-start** is a Python CLI tool that wraps around the `uv` package manager to create well-configured Python projects with modern development practices. It creates projects with pre-configured development tools, optional GitHub integration, and comprehensive template files.
 
 ## Core Architecture
 
@@ -56,7 +56,7 @@ cz commit
 ### Running the Tool
 ```bash
 # Run from development directory
-UV_ORIGINAL_CWD="$PWD" uv run --directory . uv-init project-name [options]
+UV_ORIGINAL_CWD="$PWD" uv run --directory . uv-start project-name [options]
 
 # Install in development mode
 uv pip install -e .

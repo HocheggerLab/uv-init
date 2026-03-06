@@ -91,11 +91,11 @@ def parse_args() -> argparse.Namespace:
     parser = RichArgumentParser(
         description="Initialize a new Python project with uv",
         usage=(
-            "uv-init project_name "
+            "uv-start project_name "
             "[-t lib|package|app] "
             "[-p 3.14|3.13|3.12|3.11|3.10] "
             "[-w] [-g] [--private]\n"
-            "       uv-init --config NAME EMAIL"
+            "       uv-start --config NAME EMAIL"
         ),
         epilog="Thanks for using uv_start!",
     )

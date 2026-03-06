@@ -15,8 +15,8 @@ Clone and install
 
 .. code-block:: bash
 
-   git clone https://github.com/Helfrid/uv-init.git
-   cd uv-init
+   git clone https://github.com/Helfrid/uv-start.git
+   cd uv-start
    uv sync
 
 Author configuration
@@ -27,11 +27,11 @@ you generate. Run this once after installing:
 
 .. code-block:: bash
 
-   uv-init --config "Jane Doe" "jane@example.com"
+   uv-start --config "Jane Doe" "jane@example.com"
 
-This saves your name and email to ``~/.config/uv-init/config.toml``.
+This saves your name and email to ``~/.config/uv-start/config.toml``.
 
-If you skip this step, uv-init falls back to your ``git config``
+If you skip this step, uv-start falls back to your ``git config``
 (``user.name`` / ``user.email``). If neither is set, placeholder
 values are used.
 
@@ -51,20 +51,20 @@ automatically.
 Shell alias (recommended)
 -------------------------
 
-Because uv-init is not published on PyPI, you need to tell ``uv run``
+Because uv-start is not published on PyPI, you need to tell ``uv run``
 where the project lives. A shell alias hides this detail:
 
 .. code-block:: bash
 
    # Add to ~/.zshrc or ~/.bashrc
    uv_start() {
-     UV_ORIGINAL_CWD="$PWD" uv run --directory /path/to/uv-init uv-init "$@"
+     UV_ORIGINAL_CWD="$PWD" uv run --directory /path/to/uv-start uv-start "$@"
    }
-   alias uv-init='uv_start'
+   alias uv-start='uv_start'
 
-After restarting your shell you can run ``uv-init`` from any directory:
+After restarting your shell you can run ``uv-start`` from any directory:
 
 .. code-block:: bash
 
    cd ~/projects
-   uv-init my-new-project -t package -g
+   uv-start my-new-project -t package -g

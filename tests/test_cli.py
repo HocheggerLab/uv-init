@@ -27,7 +27,7 @@ def test_validate_project_name_with_underscore():
 # Test argument parsing
 def test_parse_args_defaults(capsys):
     """Test parsing arguments with defaults"""
-    with patch("sys.argv", ["uv-init", "my-project"]):
+    with patch("sys.argv", ["uv-start", "my-project"]):
         args = parse_args()
         assert args.project_name == "my-project"
         assert args.type == "lib"  # Default type should be lib
@@ -40,7 +40,7 @@ def test_parse_args_with_options(capsys):
     with patch(
         "sys.argv",
         [
-            "uv-init",
+            "uv-start",
             "my-project",
             "--type",
             "package",
@@ -68,7 +68,7 @@ def test_parse_args_invalid_type(monkeypatch):
 def test_parse_args_config():
     """Test --config flag parses name and email"""
     with patch(
-        "sys.argv", ["uv-init", "--config", "Test Author", "test@example.com"]
+        "sys.argv", ["uv-start", "--config", "Test Author", "test@example.com"]
     ):
         args = parse_args()
         assert args.config == ["Test Author", "test@example.com"]
@@ -77,5 +77,5 @@ def test_parse_args_config():
 
 def test_parse_args_no_project_name_no_config():
     """Test that missing project_name without --config is an error"""
-    with patch("sys.argv", ["uv-init"]), pytest.raises(SystemExit):
+    with patch("sys.argv", ["uv-start"]), pytest.raises(SystemExit):
         parse_args()

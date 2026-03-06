@@ -1,8 +1,8 @@
-"""Custom exceptions for uv-init."""
+"""Custom exceptions for uv-start."""
 
 
 class UvInitError(Exception):
-    """Base exception for uv-init errors."""
+    """Base exception for uv-start errors."""
 
 
 class ProjectCreationError(UvInitError):

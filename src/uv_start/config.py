@@ -1,7 +1,7 @@
-"""User configuration management for uv-init.
+"""User configuration management for uv-start.
 
 Provides a fallback chain for author info: config file -> git config -> defaults.
-Config is stored at ~/.config/uv-init/config.toml.
+Config is stored at ~/.config/uv-start/config.toml.
 """
 
 import os
@@ -13,7 +13,7 @@ from pathlib import Path
 from rich import print as rprint
 from rich.panel import Panel
 
-CONFIG_DIR = Path.home() / ".config" / "uv-init"
+CONFIG_DIR = Path.home() / ".config" / "uv-start"
 CONFIG_FILE = CONFIG_DIR / "config.toml"
 
 
@@ -96,7 +96,7 @@ def _git_config(key: str) -> str | None:
 
 
 def save_config(name: str, email: str) -> None:
-    """Write user config to ~/.config/uv-init/config.toml."""
+    """Write user config to ~/.config/uv-start/config.toml."""
     CONFIG_DIR.mkdir(parents=True, exist_ok=True)
     content = f'[user]\nname = "{name}"\nemail = "{email}"\n'
     CONFIG_FILE.write_text(content)
@@ -106,7 +106,7 @@ def save_config(name: str, email: str) -> None:
             f"  Name:  {name}\n"
             f"  Email: {email}\n\n"
             f"  Stored in: {CONFIG_FILE}",
-            title="uv-init Config",
+            title="uv-start Config",
             border_style="green",
         )
     )
