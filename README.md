@@ -15,7 +15,7 @@ Version: ![version](https://img.shields.io/badge/version-0.5.0-blue)
 
 ## Development state of the program
 
-This project is in active development. Current version: 0.3.5
+This project is in active development.
 Features and APIs may change. Please report issues on GitHub.
 Tests currently run only on Mac and Linux with Python 3.13.
 
