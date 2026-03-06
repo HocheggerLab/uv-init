@@ -1,3 +1,9 @@
+## v0.5.0 (2026-03-06)
+
+### Fix
+
+- resolve .venv path ambiguity
+
 ## v0.4.1 (2026-02-25)
 
 ### Fix
