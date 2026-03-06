@@ -22,6 +22,12 @@ dependencies = [
     "rich>=13.9.4",
 ]
 
+[project.urls]
+Homepage = "https://github.com/hocheggerlab/uv-start"
+Documentation = "https://hocheggerlab.github.io/uv-start/"
+Repository = "https://github.com/hocheggerlab/uv-start"
+Issues = "https://github.com/hocheggerlab/uv-start/issues"
+
 [project.scripts]
 uv-start = "uv_start.__main__:main"
 
