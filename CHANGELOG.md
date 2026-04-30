@@ -1,3 +1,12 @@
+## v0.5.2 (2026-04-30)
+
+### Fix
+
+- remove changelog flag in release CI
+- version bump commit
+- skip PyPI publish when no version bump occurred
+- add --data option to build data analysis projects
+
 ## v0.5.1 (2026-03-06)
 
 ## v0.5.0 (2026-03-06)
