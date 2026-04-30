@@ -70,9 +70,16 @@ This project is licensed under the MIT License
 
 ## Installation
 
+Install as a global tool with uv (recommended):
+
 ```bash
-git clone https://github.com/Helfrid/uv-start.git
-cd uv-start && uv sync
+uv tool install uv-start
+```
+
+Or with pip:
+
+```bash
+pip install uv-start
 ```
 
 Configure your author details (run once):

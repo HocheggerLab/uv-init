@@ -10,7 +10,7 @@ from rich.panel import Panel
 from uv_start.cli import parse_args
 from uv_start.dev_deps import add_dev_dependencies, parse_dev_configs
 from uv_start.exceptions import GitSetupError, UvInitError
-from uv_start.parse_docs import parse_docs
+from uv_start.parse_docs import parse_docs, parse_docs_data
 from uv_start.router import CommandDispatcher
 from uv_start.setup_git_repo import setup_git_repo
 
@@ -39,9 +39,12 @@ def initialize_uv_start(args: Namespace) -> None:
     try:
         # Phase 1: Local project creation (rollback on failure)
         dispatcher.dispatch()
-        add_dev_dependencies(args.project_name, dispatcher.project_path)
-        parse_dev_configs(dispatcher.project_path)
-        parse_docs(args, dispatcher.project_path)
+        if getattr(args, "data", False):
+            parse_docs_data(args, dispatcher.project_path)
+        else:
+            add_dev_dependencies(args.project_name, dispatcher.project_path)
+            parse_dev_configs(dispatcher.project_path)
+            parse_docs(args, dispatcher.project_path)
     except UvInitError as e:
         _rollback(dispatcher.project_path)
         rprint(

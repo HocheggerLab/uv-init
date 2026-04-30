@@ -30,6 +30,9 @@ class CommandDispatcher:
 
     def dispatch(self) -> None:
         """Route to appropriate command handler based on argument pattern"""
+        if getattr(self.args, "data", False):
+            self._create_data_project()
+            return
         flags = self._get_project_flags()
         self._create_project(flags, workspace=self.args.workspace)
 
@@ -139,6 +142,45 @@ class CommandDispatcher:
         except subprocess.CalledProcessError as e:
             raise ProjectCreationError(
                 f"Failed to create common_utils: {e}"
+            ) from e
+
+    def _create_data_project(self) -> None:
+        """Create a plain data analysis project with scientific Python stack."""
+        rprint(
+            f"[green]Creating data analysis project at {self.original_cwd}...[/green]"
+        )
+        try:
+            subprocess.run(
+                [
+                    "uv",
+                    "init",
+                    self.args.project_name,
+                    "--python",
+                    self.args.python,
+                ],
+                check=True,
+                cwd=self.original_cwd,
+                env=clean_env(),
+            )
+            subprocess.run(
+                [
+                    "uv",
+                    "add",
+                    "jupyter",
+                    "pandas",
+                    "matplotlib",
+                    "seaborn",
+                ],
+                check=True,
+                cwd=self.project_path,
+                env=clean_env(),
+            )
+            rprint(
+                f"[green]✓[/green] Successfully created data project '[bold]{self.args.project_name}[/bold]'"
+            )
+        except subprocess.CalledProcessError as e:
+            raise ProjectCreationError(
+                f"Failed to create data project: {e}"
             ) from e
 
     def _add_other_projects(self, project_name: str) -> None:

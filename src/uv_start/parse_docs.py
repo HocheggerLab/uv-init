@@ -43,6 +43,40 @@ def parse_docs(args: Namespace, project_dir: Path) -> None:
     _init_version(args, project_dir)
 
 
+def parse_docs_data(args: Namespace, project_dir: Path) -> None:
+    """Set up template files for a data analysis project.
+
+    Copies .gitignore, .env.example, the hhlab matplotlib style, and a
+    starter sample.ipynb into the project root. No src/ structure is created.
+    """
+    for template in [".gitignore", ".env.example", "README.md"]:
+        _copy_template(template, project_dir)
+
+    _copy_template("hhlab_style01.mplstyle", project_dir)
+    _copy_template("colors.py", project_dir)
+    _copy_template("sample.ipynb", project_dir)
+
+    # CLAUDE.md is stored as data-CLAUDE.md in the template dir to avoid
+    # conflicting with this project's own CLAUDE.md during development.
+    src = TEMPLATE_DIR / "data-CLAUDE.md"
+    dest = project_dir / "CLAUDE.md"
+    shutil.copy(src, dest)
+    rprint("[green]CLAUDE.md copied to project root[/green]")
+
+    _update_content(project_dir, args, "README.md")
+    _update_content(project_dir, args, "sample.ipynb")
+    _update_content(project_dir, args, "CLAUDE.md")
+    vs_code_dir = project_dir / ".vscode"
+    vs_code_dir.mkdir(parents=True, exist_ok=True)
+    _copy_template("settings.json", vs_code_dir)
+    _copy_template("launch.json", vs_code_dir)
+    if args.github:
+        _add_github_workflows(project_dir)
+        _update_content(project_dir, args, ".github/workflows/ci.yml")
+        _update_content(project_dir, args, ".github/workflows/release.yml")
+    rprint("[green]Data project template files copied successfully.[/green]")
+
+
 def _copy_template(template: str, project_dir: Path) -> None:
     """Copy template files to the build directory"""
     try:

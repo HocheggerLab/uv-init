@@ -34,6 +34,10 @@ Options
        Sets up CI/CD workflows automatically.
    * - ``--private``
      - Make the GitHub repository private. Requires ``--github``.
+   * - ``--data``
+     - Create a data analysis project. Installs Jupyter, pandas, matplotlib,
+       and seaborn. No ``src/`` layout — just a flat project with a starter
+       notebook, lab matplotlib style, and colour palette.
    * - ``--config NAME EMAIL``
      - Save author name and email for project templates.
        Stored in ``~/.config/uv-start/config.toml``.
@@ -104,6 +108,31 @@ Combine workspace and GitHub:
 
    uv-start my-workspace -w -g
 
+Create a data analysis project
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: bash
+
+   uv-start my-analysis --data
+
+Creates a flat project (no ``src/`` layout) pre-configured for interactive
+data analysis:
+
+- **Jupyter**, **pandas**, **matplotlib**, and **seaborn** installed in the
+  ``.venv``
+- Lab matplotlib style (``hhlab_style01.mplstyle``) at the project root
+- ``colors.py`` — a ``COLOR`` enum with the lab's standard palette
+- ``sample.ipynb`` — starter notebook that applies the style and imports
+  ``COLOR``
+- ``CLAUDE.md`` — instructions for AI-assisted work that enforce consistent
+  figure styling
+
+Combine with ``--github`` to create a GitHub repository at the same time:
+
+.. code-block:: bash
+
+   uv-start my-analysis --data -g
+
 Generated project structure
 ---------------------------
 
@@ -136,6 +165,21 @@ Workspace
    ├── README.md
    └── .pre-commit-config.yaml
 
+Data analysis project
+^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: text
+
+   analysis-name/
+   ├── hhlab_style01.mplstyle   ← lab matplotlib style, loaded by the notebook
+   ├── colors.py                ← COLOR enum with the lab palette
+   ├── sample.ipynb             ← starter notebook
+   ├── CLAUDE.md                ← AI instructions for consistent figure style
+   ├── pyproject.toml
+   ├── README.md
+   ├── .env.example
+   └── .gitignore
+
 Development tools configured
 -----------------------------
 
@@ -148,6 +192,108 @@ Every generated project comes with:
   changelog generation (see :ref:`version-bumps` below)
 - **pre-commit** — Git hooks that run linting, formatting, and type
   checking before each commit
+
+.. _data-analysis:
+
+Data analysis project details
+------------------------------
+
+Matplotlib style
+^^^^^^^^^^^^^^^^
+
+``hhlab_style01.mplstyle`` is placed at the project root so it can be
+referenced by name from any notebook in the same directory:
+
+.. code-block:: python
+
+   import matplotlib.pyplot as plt
+   plt.style.use('hhlab_style01.mplstyle')
+
+Always apply this style before creating any figure.
+
+Lab colour palette
+^^^^^^^^^^^^^^^^^^
+
+``colors.py`` defines the ``COLOR`` enum with the lab's standard palette.
+Use the enum values — never raw hex strings or default matplotlib colors:
+
+.. code-block:: python
+
+   from colors import COLOR
+
+   ax.scatter(x, y, color=COLOR.BLUE.value)
+   ax.bar(labels, heights, color=COLOR.PINK.value)
+
+Available colours:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 25 15 60
+
+   * - Name
+     - Hex
+     - Typical use
+   * - ``COLOR.BLUE``
+     - ``#526C94``
+     - Primary data series
+   * - ``COLOR.LIGHT_BLUE``
+     - ``#75B1CE``
+     - Secondary / paired condition
+   * - ``COLOR.PINK``
+     - ``#DC6B83``
+     - Contrast / highlight
+   * - ``COLOR.YELLOW``
+     - ``#D8C367``
+     - Third condition
+   * - ``COLOR.TURQUOISE``
+     - ``#00bfb2``
+     - Fourth condition
+   * - ``COLOR.LIGHT_GREEN``
+     - ``#CCDBA2``
+     - Fifth condition
+   * - ``COLOR.LAVENDER``
+     - ``#C6B2D1``
+     - Sixth condition
+   * - ``COLOR.PURPLE``
+     - ``#654875``
+     - Seventh condition
+   * - ``COLOR.OLIVE``
+     - ``#889466``
+     - Eighth condition
+   * - ``COLOR.GREY``
+     - ``#D4D3CF``
+     - Background / negative control
+   * - ``COLOR.DARKGREY``
+     - ``#4A4A4A``
+     - Text / annotations
+
+To add a new colour, extend the ``COLOR`` enum in ``colors.py`` rather
+than scattering raw hex values through notebooks.
+
+Starter notebook
+^^^^^^^^^^^^^^^^
+
+``sample.ipynb`` opens with the standard imports already in place:
+
+.. code-block:: python
+
+   import matplotlib.pyplot as plt
+   import pandas as pd
+   import seaborn as sns
+   from colors import COLOR
+
+   plt.style.use('hhlab_style01.mplstyle')
+
+It also includes a commented example scatter plot to illustrate the
+expected usage pattern.
+
+CLAUDE.md
+^^^^^^^^^
+
+The generated ``CLAUDE.md`` tells Claude Code (and other AI tools) to
+always apply the lab style and use the ``COLOR`` enum. This keeps
+AI-generated figure code consistent with hand-written code across the
+project.
 
 .. _version-bumps:
 

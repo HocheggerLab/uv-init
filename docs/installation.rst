@@ -10,14 +10,20 @@ Prerequisites
 - **gh** — the GitHub CLI, only needed if you use the ``--github`` flag
   (`install gh <https://cli.github.com/>`_)
 
-Clone and install
------------------
+Install
+-------
+
+Install as a global tool with uv (recommended):
 
 .. code-block:: bash
 
-   git clone https://github.com/Helfrid/uv-start.git
-   cd uv-start
-   uv sync
+   uv tool install uv-start
+
+Or with pip:
+
+.. code-block:: bash
+
+   pip install uv-start
 
 Author configuration
 --------------------
@@ -55,21 +61,12 @@ be stored in any file.
    ``gh`` will use it automatically. However, OAuth via ``gh auth login``
    is the recommended approach.
 
-Shell alias (recommended)
--------------------------
+Running uv-start
+----------------
 
-Because uv-start is not published on PyPI, you need to tell ``uv run``
-where the project lives. A shell alias hides this detail:
-
-.. code-block:: bash
-
-   # Add to ~/.zshrc or ~/.bashrc
-   uv_start() {
-     UV_ORIGINAL_CWD="$PWD" uv run --directory /path/to/uv-start uv-start "$@"
-   }
-   alias uv-start='uv_start'
-
-After restarting your shell you can run ``uv-start`` from any directory:
+After installing, ``uv-start`` is available directly on your PATH.
+Run it from any directory that will become the **parent** of your new
+project (it must not itself be a git repository):
 
 .. code-block:: bash
 
