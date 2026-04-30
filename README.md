@@ -34,7 +34,7 @@ Helfrid Hochegger
 ## Dependencies
 - Requires Python 3.13 (not tested on other versions)
 - UV package manager installed (https://github.com/astral-sh/uv)
-- GitHub CLI (`gh`) authenticated via `gh auth login` (if using GitHub features)
+- GitHub CLI (`gh`) authenticated via `gh auth login`, if using GitHub features
 
 ---
 
