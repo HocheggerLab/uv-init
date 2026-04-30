@@ -42,25 +42,30 @@ jobs:
           echo "EOF" >> $GITHUB_ENV
 
       - name: Attempt version bump (if applicable)
+        id: bump
         run: |
           COMMIT_MSG="${{ env.COMMIT_MSG }}"
           if echo "$COMMIT_MSG" | grep -qE "^(fix|feat|refactor|perf)(\([^)]+\))?\!?: "; then
             echo "Conventional commit detected – bumping version."
-            cz bump --yes || echo "No version bump occurred."
+            cz bump --yes && echo "bumped=true" >> $GITHUB_OUTPUT || echo "bumped=false" >> $GITHUB_OUTPUT
           else
             echo "Non-bump commit type – skipping version bump."
+            echo "bumped=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Push changes
         run: git push --follow-tags
 
       - name: Install uv
+        if: steps.bump.outputs.bumped == 'true'
         uses: astral-sh/setup-uv@v3
 
       - name: Build package
+        if: steps.bump.outputs.bumped == 'true'
         run: uv build
 
       - name: Publish to PyPI
+        if: steps.bump.outputs.bumped == 'true'
         run: uvx twine upload dist/*
         env:
           TWINE_USERNAME: __token__
